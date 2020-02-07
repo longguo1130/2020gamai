@@ -1,0 +1,124 @@
+.dz-wrap {
+    border: 2px dashed #c5c5c9;
+    border-radius: 5px;
+    background: white;
+    text-align: center;
+    /*margin-top: 15px;*/
+    /*margin-bottom: 15px;*/
+    padding: 8px;
+    vertical-align: middle;
+    cursor: pointer;
+    min-height: 330px;
+}
+.dz-wrap>img{
+    height: 300px;
+}
+.dz-wrap .dz-message{
+    /*margin-top: 80px;*/
+    padding: 80px 20px
+}
+.dz-message i{
+    font-size: 5em;
+}
+
+.bid-modify{
+    margin-top:10px;
+    float:right;
+    font-size: 14px;
+    border-radius:5px;
+
+
+
+}
+.title > span {
+    padding:4%;
+}
+.container >h4{
+    padding-left: 3%;
+    padding-bottom: 2%;
+}
+.note{
+    width: 90%;
+}
+.note > p{
+    padding-left:4%;
+}
+
+ul.thumbs-wrap{
+    list-style: none;
+    padding: 0;
+    margin: 6px 0;
+    display: inline-block;
+    height: 100%;
+    width: 100%;
+    /*min-height: 300px;*/
+    /*overflow-x: auto;*/
+}
+ul.thumbs-wrap li {
+    display: inline-block;
+    max-width: 80px;
+    height: 80px;
+    width: 80px;
+    float: left;
+    margin-bottom: 5px;
+    margin-right: 5px;
+    overflow: hidden;
+    border: solid 1px #EEE;
+}
+ul.thumbs-wrap li a {
+    display: block;
+    height: 100%;
+    cursor: pointer;
+    position: relative;
+}
+ul.thumbs-wrap a {
+    text-decoration: none;
+    margin-left: 60%;
+    cursor: pointer;
+    
+    text-align: center;
+   
+
+}
+ul.thumbs-wrap li a img {
+    height: 78px;
+    display: block;
+    transform: translateX(-50%);
+    margin-left: 50%;
+}
+ul.thumbs-wrap li.active{
+    border:3px solid #2aff03;
+}
+
+.thumb i{
+    position: absolute;
+    top:0;
+    right:0;
+    z-index: 999;
+    font-size: 1.1em;
+    width: 1.1em;
+    text-align: center;
+    line-height: 1.1em;
+    border-radius: 50%;
+    color:white;
+    background: #666;
+}
+
+#product-info label{
+    padding-left: 0;
+    margin-bottom: 4px;
+}
+/*.form-wrap{*/
+    /*position: relative;*/
+    /*padding-bottom: 40px;*/
+/*}*/
+/*#product-thumb-upload{*/
+    /*position: absolute;*/
+    /*width: 100%;*/
+    /*top: 36px;*/
+    /*z-index: 9999;*/
+/*}*/
+.form-group.has-error .form-control {
+    border-color: #f55753;
+    box-shadow: none;
+}

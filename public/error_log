@@ -1,0 +1,1 @@
+[23-Jan-2020 02:22:43 UTC] PHP Fatal error:  Trait 'App\Http\Controllers\Auth\VerifiezsEmails' not found in /home2/fivestu2/public_html/gamai/app/Http/Controllers/Auth/VerificationController.php on line 21
