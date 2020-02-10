@@ -11,6 +11,7 @@ use App\Message;
 use App\Product;
 use App\City;
 use Illuminate\Support\Facades\Hash;
+use App\Moderator;
 
 class AdminController extends Controller
 {
@@ -123,6 +124,18 @@ class AdminController extends Controller
         ]);
 
         return redirect('admin');
+    }
+
+    public function moderator($user , $type){
+
+        $moderator = new Moderator();
+        $moderator->user_id = $user;
+        $moderator->type = $type;
+        $moderator->save();
+        return redirect('admin');
+
+
+
     }
 
 }

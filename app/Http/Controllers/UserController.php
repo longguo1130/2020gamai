@@ -50,7 +50,10 @@ class UserController extends Controller
     {
 
         $user = User::find(Auth::user()->id);
+
         $possible_time = time()-$user->membership_created_at;
+
+
 
 
         if($user->membership_type == 1){

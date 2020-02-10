@@ -48,6 +48,9 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return ($user = auth()->user()) && $user->user_role==1;
     }
+    public static function isModerator(){
+        return ($user = auth()->user()) && $user->user_role==2;
+    }
     public function created_date(){
         //return Carbon::parse($this->created_at)->diffForHumans();
         return $this->created_at->diffForHumans();

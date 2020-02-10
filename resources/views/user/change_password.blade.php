@@ -70,7 +70,7 @@
                         <label for="password" class="col-md-4 col-form-label">New Password</label>
 
                         <div class="col-md-10">
-                            <input id="new_password" type="password" class="password" name="new_password" autocomplete="current-password" placeholder="6 characters with a number and a letter" required>
+                            <input id="new_password" type="password" class="password" name="new_password" autocomplete="current-password" placeholder="6 characters with a number and a letter"required>
                             <img src="{{asset('assets/ui-icon-pack-15-512.png')}}" class="unmask" alt="">
 
                         </div>

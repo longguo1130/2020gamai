@@ -10,7 +10,8 @@
 
 @section('content')
     <div class="header">
-        <div class="header_row ">
+        <div class="header_row">
+
             <a class="navbar-brand" href="{{ route('home') }}">
                 <img src="{{asset('images/gamai-logo.png')}}" alt="" style="height: 30px;">
 
@@ -40,6 +41,23 @@
                 <i class="fa fa-search"></i>
                 <input type="text" name="q" class="navbar-search" placeholder="Search stuff" value="{{ $query }}">
             </form>
+        </div>
+        @if(!empty(Session::get('error_code')) && Session::get('error_code') == 5)
+            <script src="{{ asset('plugins/jQuery/jQuery-2.1.4.min.js') }}" type="text/javascript"></script>
+
+            <script>
+                $(function() {
+                    $('#loginModal').modal('show');
+                });
+            </script>
+        @endif
+        <div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document" style="margin-top: 10%;">
+                <div class="modal-content">
+                    <img src="{{asset('assets/gamai-logo.png')}}" alt="">
+
+                </div>
+            </div>
         </div>
         <div class="description_container">
             <div class="description">
@@ -116,8 +134,8 @@
     <script src="{{ asset('plugins/jQuery-Autocomplete-master/dist/jquery.autocomplete.js') }}"></script>
     <script src="{{ asset('js/page/front/front.js') }}"></script>
     <script src="{{ asset('plugins/dropzone/dropzone.js') }}"></script>
-    <script src="{{ asset('plugins/jQuery-Autocomplete-master/dist/jquery.autocomplete.js') }}"></script>
     <script src="{{ asset('js/page/product/create.js') }}"></script>
+
 
 
 

@@ -10,7 +10,11 @@
                         <img src="{{ asset('images/no-image.png') }}" />
                         @endif
                 </a>
-                 @if(is_null($user_id))
+                <div style="padding:12px 4px;">
+                    <p class="title" style="margin-bottom: -12px; margin-top: 0px; ">{{ $post->title }}</p>
+                    <div class="product-info">
+                        <span>{{App\City::find($post->city_id)->city}}</span>
+                        @if(is_null($user_id))
                             <a  href="{{ route('login') }}" class="favor_btn favor_btn_{{ $post->id }}" data-id="{{ $post->id }}" data-user="{{ $user_id }}">
                                 <img src="{{asset('assets/heart.png')}}" alt="" style="height: 20px">
                             </a>
@@ -25,13 +29,6 @@
 
                             </a>
                         @endif
-                <div style="padding:6px 4px;">
-                    <p class="title" style="margin-bottom: -12px; margin-top: 0px; ">{{ $post->title }}</p>
-                    
-                    
-                    <div class="product-info style="    padding: 5px;">
-                        <span>{{App\City::find($post->city_id)->city}}</span>
-                       
                     </div>
                 </div>
             </div>

@@ -23,39 +23,51 @@
                     @if(30-\Carbon\Carbon::parse(Auth::user()->created_at)->diffInDays(\Carbon\Carbon::now())>0)
                         <div class="membership-pack-monthly pack{{$post->id}}">
                             <h4>{{$post->membership_status}}</h4>
-                            <h3>PHP {{$post->amount_monthly}}</h3>
+                            <h3>&#8369; {{$post->amount_monthly}}</h3>
                             @if($post->id==1)
                                 <h6>{{30-\Carbon\Carbon::parse(Auth::user()->created_at)->diffInDays(\Carbon\Carbon::now())}}Days left</h6>
 
                             @else
-                                <h6>/Monthly</h6>
+                                <h6>Monthly</h6>
                             @endif
-                            <h4 class="inclusion">INCUSIONS</h4>
-                            <ul>
-                                <li>sample inclusion</li>
+                            {{--<h4 class="inclusion">INCUSIONS</h4>--}}
+                            {{--<ul>--}}
+                            {{--<li>sample inclusion</li>--}}
 
-                            </ul>
+                            {{--</ul>--}}
                             <h4 class="inclusion">Bid Limit</h4>
-                            <h5>{{$post->bid_limit}}Limit</h5>
-                            <a href="javascript:void(0)" class="sellect-plan" data-toggle="modal" data-target="#shareList" data-membership="{{$post->id}}" data-amount="{{$post->amount_monthly}}" data-id="{{Auth::user()->id}}" data-type="2">Select Plan</a>
+                            <h5>&#8369;{{$post->bid_limit}}</h5>
+                            @if(Auth::user()->membership)
+                                @if($post->id == Auth::user()->membership)
+                                    <label for="" class="current-membership">Your current membership</label>
+                                @else
+                                    <label for="" class="current-membership">This membership is expired</label>
+                                @endif
+                            @else
+                                <a href="javascript:void(0)" class="sellect-plan" data-toggle="modal" data-target="#shareList" data-membership="{{$post->id}}" data-amount="{{$post->amount_monthly}}" data-id="{{Auth::user()->id}}" data-type="2">Select Plan</a>
+                            @endif
                         </div>
                     @endif
                 @endif
                 @if($post->id>1 && $post->id<5)
                     <div class="membership-pack-monthly pack{{$post->id}}">
                         <h4>{{$post->membership_status}}</h4>
-                        <h3>PHP {{$post->amount_monthly}}</h3>
+                        <h3>&#8369; {{$post->amount_monthly}}</h3>
 
-                        <h6>/Monthly</h6>
+                        <h6>Monthly</h6>
 
-                        <h4 class="inclusion">INCUSIONS</h4>
-                        <ul>
-                            <li>sample inclusion</li>
+                        {{--<h4 class="inclusion">INCUSIONS</h4>--}}
+                        {{--<ul>--}}
+                        {{--<li>sample inclusion</li>--}}
 
-                        </ul>
+                        {{--</ul>--}}
                         <h4 class="inclusion">Bid Limit</h4>
-                        <h5>{{$post->bid_limit}}Limit</h5>
-                        <a href="javascript:void(0)" class="sellect-plan" data-toggle="modal" data-target="#shareList" data-membership="{{$post->id}}" data-amount="{{$post->amount_monthly}}" data-id="{{Auth::user()->id}}" data-type="2">Select Plan</a>
+                        <h5>&#8369;{{$post->bid_limit}}</h5>
+                        @if($post->id == Auth::user()->membership && Auth::user()->membership_type ==2)
+                            <label for="" class="current-membership">Your current membership</label>
+                        @else
+                            <a href="javascript:void(0)" class="sellect-plan" data-toggle="modal" data-target="#shareList" data-membership="{{$post->id}}" data-amount="{{$post->amount_monthly}}" data-id="{{Auth::user()->id}}" data-type="2">Select Plan</a>
+                        @endif
                     </div>
                 @endif
 
@@ -66,18 +78,25 @@
                 @if($post->id>1)
                     <div class="membership-pack pack{{$post->id}}">
                         <h4>{{$post->membership_status}}</h4>
-                        <h3>PHP {{$post->amount_yearly}}</h3>
-                        <h6>/Anunally</h6>
-                        <h4 class="inclusion">INCUSIONS</h4>
-                        <ul>
-                            <li>sample inclusion</li>
+                        <h3>&#8369; {{$post->amount_yearly}}</h3>
+                        <h6>Anunally</h6>
+                        {{--<h4 class="inclusion">INCUSIONS</h4>--}}
+                        {{--<ul>--}}
+                        {{--<li>sample inclusion</li>--}}
 
-                        </ul>
+                        {{--</ul>--}}
                         <h4 class="inclusion">Bid Limit</h4>
-                        <h5>{{$post->bid_limit}}Limit</h5>
-                        <a href="javascript:void(0)" class="sellect-plan" data-toggle="modal" data-target="#shareList" data-membership="{{$post->id}}" data-amount="{{$post->amount_yearly}}" data-id="{{Auth::user()->id}}" data-type="1">Select Plan</a>
+                        <h5>&#8369;{{$post->bid_limit}}</h5>
+                        @if($post->id == Auth::user()->membership && Auth::user()->membership_type ==1)
+                            <label for="" class="current-membership">Your current membership</label>
+                        @else
+                            <a href="javascript:void(0)" class="sellect-plan" data-toggle="modal" data-target="#shareList" data-membership="{{$post->id}}" data-amount="{{$post->amount_yearly}}" data-id="{{Auth::user()->id}}" data-type="1">Select Plan</a>
+                        @endif
                     </div>
+
                 @endif
+
+
             @endforeach
         </div>
         <div id="paypal_success" style="text-align: center;color:blue;"></div>
@@ -205,12 +224,12 @@
                             $(function () {
                                 $.ajax({
                                     url: pay_return_url,
-                                    type: "post",
+                                    type: "get",
                                     datatype: "json",
-                                    data: {details,user_id:user_id,membership:membership, type:type, _token: $("meta[name='csrf-token']").attr("content")},
+                                    data: {details,user_id:user_id,membership:membership, type:type},
                                     success: function (data) {
                                         // $('.choose-plan').empty();
-                                        $('.choose-plan').html(data.success_html);
+                                        // $('.choose-plan').html(data.success_html);
                                         // $('.paypal-button-container').remove();
                                         $('.modal-content').html(data.success_html);
 

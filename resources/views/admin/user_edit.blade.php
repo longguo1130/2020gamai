@@ -65,5 +65,16 @@
             </div>
         </div>
     </form>
+
+        @if(empty(\App\Moderator::where('user_id',$user->id)->where('type',1)->first()))
+            <a href="{{route('admin.users.moderator',['user'=>$user,'type'=>1])}}" class="btn btn-success">Make this user Moderater 1</a>
+            @else
+
+        @endif
+        @if(empty(\App\Moderator::where('user_id',$user->id)->where('type',2)->first()))
+            <a href="{{route('admin.users.moderator',['user'=>$user,'type'=>2])}}" class="btn btn-success">Make this user Moderater 2</a>
+            @else
+
+            @endif
     </div>
 @endsection

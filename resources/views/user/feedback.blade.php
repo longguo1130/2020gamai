@@ -34,7 +34,7 @@
 
                             </div>
                             <div class="form-group">
-                                <textarea name="comments" id="comments" cols="25" rows="5"></textarea>
+                                <textarea name="comments" id="comments" cols="30" rows="5"></textarea>
                             </div>
                             <div class="form-group">
                                 <button type="submit">Submit</button>

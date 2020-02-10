@@ -24,6 +24,12 @@
                         <a href="{{route('admin' ,['admin'=>Auth::user()->user_role])}}" class="btn btn-success" style="height: 30px;margin-top: 4px;margin-left: 4px;padding: 3px;">Go to Admin page</a>
                     @endif
                 </li>
+                <li>
+                    @if(Auth::user()->user_role == 2)
+
+                        <a href="{{route('moderator' ,['moderator'=>Auth::user()->user_role])}}" class="btn btn-success" style="height: 30px;margin-top: 4px;margin-left: 4px;padding: 3px;">Go to Moderator</a>
+                    @endif
+                </li>
                 <li class="nav-item">
                     @include('home.nav.logged')
                 </li>

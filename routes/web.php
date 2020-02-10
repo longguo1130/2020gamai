@@ -21,11 +21,11 @@ Route::get('social-success/{id?}', 'UserController@social_success')->name('user.
 
 Route::middleware(['auth','verified'])->group(function () {
     /* profile */
-//    Route::get('auth/{provider}', 'Auth\LoginController@redirectToSocial')->name('auth.provider');
+//
     Route::get('profile/{id?}', 'UserController@profile')->name('profile');
     Route::post('profile/{id?}/store', 'UserController@store')->name('profile.store');
     Route::get('detail/profile', 'UserController@profile_detail')->name('profile.detail');
-    Route::get('profile/chatting/{id?}', 'UserController@chatting')->name('profile.chatting');
+    Route::get('profile/chatting/{id?}', 'UserCon Route::get(\'auth/{provider}\', \'Auth\LoginController@redirectToSocial\')->name(\'auth.provider\');troller@chatting')->name('profile.chatting');
     Route::get('edit/profile/{id?}', 'UserController@profile_edit')->name('profile.edit');
     Route::post('profile/image/upload','UserController@upload_image')->name('profile.image.upload');
     Route::get('profile/image/uploaded','UserController@uploaded_image')->name('profile.image.uploaded');
@@ -46,6 +46,13 @@ Route::middleware(['auth','verified'])->group(function () {
     Route::any('admin/verify/{id?}/email','AdminController@verify_email')->name('admin.verify.email');
     Route::any('admin/create/user','AdminController@create_user')->name('admin.user.create');
     Route::any('admin/store/newuser','AdminController@store_newuser')->name('admin.newuser.store');
+    Route::any('admin/moderator/{id?}/{type?}','AdminController@moderator')->name('admin.users.moderator');
+    Route::get('moderator','ModeratorController@home')->name('moderator');
+    Route::any('moderator/user/{id?}/valid_id','ModeratorController@user_valid_id')->name('moderator.user.valid_id');
+    Route::any('moderator/user/{id?}/edit','ModeratorController@user_edit')->name('moderator.user.edit');
+    Route::any('moderator/user/{id?}/store','ModeratorController@user_store')->name('moderator.user.store');
+
+
 });
 
 Route::get('/', 'HomeController@index')->name('home');
@@ -92,4 +99,4 @@ Route::get('cancel', 'PayPalController@cancel')->name('payment.cancel');
 
 Route::get('payment/success', 'PayPalController@success')->name('payment.success');
 
-Route::post('/paypal-transaction-complete','UserController@paypal_success')->name('paypal.success');
+Route::get('/paypal-transaction-complete','UserController@paypal_success')->name('paypal.success');
