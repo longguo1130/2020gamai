@@ -20,10 +20,9 @@
                     <span>Duration</span>
                     <select class="form-control" name="duration" id="duration">
                         <option value="0">Select Duration</option>
-                        <option value="Day" {{ old('duration') == 1 ? 'selected' : '' }}>Day</option>
-                        <option value="Week" {{ old('duration') == 2 ? 'selected' : '' }}>Week</option>
-                        <option value="Month" {{ old('duration') == 3 ? 'selected' : '' }}>Month</option>
-                        <option value="Year" {{ old('duration') == 4 ? 'selected' : '' }}>Year</option>
+
+                        <option value="Month" {{ $bid->duration =='Month' ? 'selected' : '' }}>Month</option>
+                        <option value="Year" {{ $bid->duration == 'Year' ? 'selected' : '' }}>Year</option>
                     </select>
                 </div>
             </div>

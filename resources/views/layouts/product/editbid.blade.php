@@ -16,7 +16,7 @@
                                     @foreach($product->images as $image)
                                         <div data-sthumb="{{ asset('thumbnails/'.$image->path) }}">
                                             @if(!empty($image->path))
-                                                <img src="{{ asset('thumbnails/'.$image->path) }}"/>
+                                                <img src="{{ asset('thumbnails/'.$image->path) }}" style="height: 300px;"/>
                                             @else
                                                 <img src="{{asset('images/no-image.png')}}" alt="">
                                             @endif

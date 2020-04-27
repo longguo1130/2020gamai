@@ -132,7 +132,7 @@
                        return actions.order.create({
                            purchase_units: [{
                                amount: {
-                                   value:'2'
+                                   value:amount
 
 
                                }
@@ -147,7 +147,7 @@
                                    url: pay_return_url,
                                    type: "get",
                                    datatype: "json",
-                                   data: {details,user_id:user_id,membership:membership, type:type},
+                                   data: {user_id:user_id,membership:membership, type:type},
                                    success: function (data) {
                                        $('#paypal_success').html(data.success_html);
                                        $('#paypal-button-container').remove();

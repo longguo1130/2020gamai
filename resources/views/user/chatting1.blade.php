@@ -532,6 +532,7 @@
                 height: 60px;
                 line-height: 60px;
                 background: #f5f5f5;
+                position: relative;
             }
             #frame .content .contact-profile img {
                 width: 40px;

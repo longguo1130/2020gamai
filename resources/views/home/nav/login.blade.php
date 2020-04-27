@@ -11,21 +11,29 @@
     <!-- Modal content -->
     <div class="showmodal-content">
         <div class="card-body">
-            <h1 style="text-align: center;"><a href="{{ route('home') }}"><img src="{{asset('images/gamai-logo.png')}}" alt="" style="height: 30px;"></a></h1>
-            <p>Buy and sell quickly, safetly and localty. It's time to Gamai!</p>
+            <h1 style="text-align: center;"><a href="{{ route('home') }}"><img src="{{asset('assets/gamai-logo.png')}}" alt="" style="height: 40px;margin-top:-40px"></a></h1>
+            {{--<h4 style="text-align: center;"><p style="font-size: 18px;">Get what you need,<br>when you need it. <br>--}}
+            {{--Quickly, Safely, Efficiently. <br>--}}
+            {{--It's time to Gamai!</p></h4>--}}
 
             <form method="POST" action="{{ route('login') }}">
                 @csrf
                 <span>Sign in with your</span>
                 <div class="form-group row login-social" style="justify-content: center;">
-                    <a href="{{ route('auth.provider',['provider'=>'facebook']) }}" class="login100-social-item col-sm-4 col-12" target="_blank">
-                        <img src="{{asset('assets/Asset 2@4x.png')}}" alt="" >
+                    <a href="{{route('auth.provider',['provider'=>'facebook']) }}" class="login100-social-item" >
+                        <img src="{{asset('assets/Facebook.png')}}" alt="" >
                     </a>
-                    <a href="{{route('auth.provider',['provider'=>'google']) }}" class="login100-social-item col-sm-4 col-12" target="_blank">
-                        <img src="{{asset('assets/Asset 3@4x.png')}}" alt="" >
+
+                    <a href="{{route('auth.provider',['provider'=>'google']) }}" class="login100-social-item"   >
+                        <img src="{{asset('assets/google.png')}}" alt="" >
+                        {{--<div id="my-signin2" data-redirecturi="{{route('auth.provider.callback',['provider'=>'google'])}}">></div>--}}
                     </a>
-                    <a href="{{ url('register') }}" class="login100-social-item col-sm-4 col-12" >
-                        <img src="{{asset('assets/Asset 4@4x.png')}}" alt="" >
+                    <a href="{{route('auth.provider',['provider'=>'sign-in-with-apple']) }}" class="login100-social-item" >
+                        <img src="{{asset('assets/apple.png')}}" alt="" >
+                    </a>
+
+                    <a href="{{ url('register') }}" class="login100-social-item" >
+                        <img src="{{asset('assets/Sign-up.png')}}" alt="">
                     </a>
                 </div>
                 <div class="form-group row">
@@ -63,7 +71,7 @@
                         </button>
                     </div>
                 </div>
-                <div class="form-group row">
+                <div class="form-group row" style="margin-bottom: -10px">
                     <div class="col-md-12">
                         <a href="{{route('password.request')}}">Forget Password?</a>
                     </div>
@@ -103,4 +111,21 @@
         }
     }
 
+    // function onSuccess(googleUser) {
+    //
+    // }
+    // function onFailure(error) {
+    //
+    // }
+    // function renderButton() {
+    //     gapi.signin2.render('my-signin2', {
+    //         'scope': 'profile email',
+    //
+    //         'longtitle': true,
+    //         'theme': 'dark',
+    //         'onsuccess': onSuccess,
+    //         'onfailure': onFailure
+    //     });
+    // }
 </script>
+

@@ -22,8 +22,11 @@ class ModeratorController extends Controller
     }
     public function home(Request $request){
         $user = User::get();
+        if($request->moderator == 2)
+            return view('moderator.index',['users'=>$user]);
+        else
+            return view('moderator.verify',['users'=>$user]);
 
-        return view('moderator.index',['users'=>$user]);
     }
     public function user_valid_id(Request $request){
         $user = User::find($request->id);
@@ -47,7 +50,8 @@ class ModeratorController extends Controller
         $user = User::find($request->id);
 
         $user->bid_count = $request->bid_count;
-
+        $user->membership = $request->membership;
+        $user->membership_type =1;
         $user->save();
 
         return redirect('moderator');

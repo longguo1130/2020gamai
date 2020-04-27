@@ -9,6 +9,7 @@
             <th>Category</th>
             <th>Description</th>
             <th>Date</th>
+            <th>Action</th>
 
         </tr>
         @foreach($products as $product)
@@ -20,6 +21,7 @@
                 <td>{{App\Category::where('id',$product->category_id)->first()->category}}</td>
                 <td>{{$product->text}}</td>
                 <td>{{$product->created_at}}</td>
+                <td><a href="{{route('admin.delete.illegal',['id'=>$product->id])}}" class="btn btn-danger" onclick="return confirm('Are you sure?')">Delete</a></td>
             </tr>
 
 

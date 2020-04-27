@@ -3,7 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Category;
+use App\Favorite;
 use App\Feedback;
+use App\Membership;
+use App\UserAccount;
 use Illuminate\Http\Request;
 use App\User;
 use App\Bid;
@@ -29,10 +32,12 @@ class AdminController extends Controller
 
         $users = User::get();
         $users_html = view('admin.users',['users'=>$users])->render();
+        $accounts = UserAccount::get();
+        $accounts_html = view('admin.accounts',['accounts'=>$accounts])->render();
         $bids = Bid::get();
         $bidding_html = view('admin.bidding',['bids'=>$bids])->render();
         $messages = Message::get();
-        $message_html = view('admin.messages',['messages'=>$messages])->render();
+        $message_html = view('admin.messages',['users'=>$users])->render();
         $products = Product::get();
         $product_html = view('admin.products',['products'=>$products])->render();
         $reviews = Feedback::get();
@@ -44,6 +49,7 @@ class AdminController extends Controller
         return response()->json([
             'status'=>true,
             'users_html'=>$users_html,
+            'accounts_html'=>$accounts_html,
             'bidding_html'=>$bidding_html,
             'message_html'=>$message_html,
             'product_html'=>$product_html,
@@ -60,7 +66,7 @@ class AdminController extends Controller
     }
 
     public function user_store(Request $request){
-
+//        dd($request);
         $user = User::find($request->id);
         $user->username = $request->username;
         $user->email = $request->email;
@@ -68,8 +74,13 @@ class AdminController extends Controller
         $user->verify_status = $request->verify_status;
         $user->rating = $request->rating;
         $user->transaction_count = $request->transaction_count;
+//        if ($request->membership!=0)
+//        $user->bid_count = Membership::where('id',$request->membership)->first()->bid_limit;
         $user->bid_count = $request->bid_count;
-        $user->user_role = $request->user_role;
+
+        $user->user_role = $request->role;
+        $user->membership = $request->membership;
+        $user->membership_type = 1;
         $user->save();
 
         return redirect('admin');
@@ -78,7 +89,13 @@ class AdminController extends Controller
 
     public  function user_delete(Request $request){
 
-        User::find($request->id)->delete();
+        Product::where('user_id',$request->id)->delete();
+
+        Bid::where('buyer_id',$request->id)->orWhere('seller_id',$request->id)->delete();
+        Favorite::where('user_id',$request->id)->delete();
+        Feedback::where('to_user',$request->id)->delete();
+        Message::where('from_user',$request->id)->orWhere('to_user',$request->id)->delete();
+        User::where('id',$request->id)->first()->delete();
 
         return redirect()->back();
 
@@ -88,6 +105,8 @@ class AdminController extends Controller
         $user = User::find($request->id);
         if ($request->accept ==1){
             $user->update(['valid_id_status'=>1,'verify_status'=>$user->verify_status+10]);
+            if ($user->verify_status == 50 )
+                $user->update(['bid_count'=>$user->bid_count+5000]);
 
         }
         else{
@@ -116,12 +135,15 @@ class AdminController extends Controller
             'email' => $request['email'],
             'password' => Hash::make($request['password']),
             'avatar' => "default.png",
-            'userrole'=> $request['userrole'],
+            'user_role'=> $request['role'],
             'verify_status'=>5,
+            'membership' => $request['membership'],
+            'membership_type' => 1,
 
-            'bid_count'=>5000,
+            'bid_count'=>Membership::where('id',$request->membership)->first()->bid_limit,
 
         ]);
+
 
         return redirect('admin');
     }
@@ -132,10 +154,15 @@ class AdminController extends Controller
         $moderator->user_id = $user;
         $moderator->type = $type;
         $moderator->save();
+
+        $user = User::find($user);
+        $user->user_role = 2;
+        $user ->save();
         return redirect('admin');
-
-
-
+    }
+    public function delete_illegal($id){
+        Product::find($id)->delete();
+        return redirect('admin');
     }
 
 }

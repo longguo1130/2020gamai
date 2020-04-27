@@ -32,7 +32,7 @@ class LoginController extends Controller
      *
      * @var string
      */
-    protected $redirectTo = '/profile';
+    protected $redirectTo = '/';
 
     protected $username;
 
@@ -80,8 +80,12 @@ class LoginController extends Controller
      */
     public function redirectToSocial($provider)
     {
+        if ($provider == 'sign-in-with-apple')
 
-        return Socialite::driver($provider)->redirect();
+            return  Socialite::driver($provider)->scopes(["name", "email"])
+            ->redirect();
+        else
+            return  Socialite::driver($provider)->redirect();
     }
 
     /**
@@ -94,6 +98,7 @@ class LoginController extends Controller
 
             $user = Socialite::driver($provider)->user();
 
+
             $finduser = User::where('provider', $provider)->where('provider_id', $user->id)->first();
             $socialiteuser = SocialAccount::where('provider', $provider)->where('provider_id', $user->id)->first();
             $finduser_email = User::where('email',$user->email)->first();
@@ -102,15 +107,17 @@ class LoginController extends Controller
 
                 Auth::login($finduser);
 
-                return redirect(route('home'));
+                return redirect(route('home'))->with('error_code', 5);
 
             }elseif($socialiteuser){
                 $user = User::where('id',$socialiteuser->user_id)->first();
                 Auth::login($user);
 
-                return redirect(route('home'));
+                return redirect(route('home'))->with('error_code', 5);
             }
             else{
+                //
+                //
                 if ($finduser_email){
                     SocialAccount::create([
                         'user_id' => $finduser_email->id,
@@ -118,7 +125,8 @@ class LoginController extends Controller
                         'provider_id' => $user->id,
                         'token' => $user->token,
                     ]);
-                    $finduser_email->update(['verify_status'=>$finduser_email->verify_status+10]);
+                    if (SocialAccount::where('user_id',$finduser_email->id)->get()->count()<3)
+                        $finduser_email->update(['verify_status'=>$finduser_email->verify_status+10]);
                     if (Auth::user())
                         return redirect('profile');
                     else
@@ -133,16 +141,18 @@ class LoginController extends Controller
                             'provider_id' => $user->id,
                             'token' => $user->token,
                         ]);
-                        Auth::user()->update(['verify_status'=>Auth::user()->verify_status+10]);
+                        if (SocialAccount::where('user_id',Auth::user()->id)->get()->count()<3)
+
+                            Auth::user()->update(['verify_status'=>Auth::user()->verify_status+10]);
                         return redirect('profile');
                     }
                     else{
                         $newUser = User::create([
-                            'name' => $user->name,
+                            'name' => $user->name ? $user->name:'apple_user',
                             'email' => $user->email,
                             'provider'=> $provider,
                             'provider_id'=> $user->id,
-                            'avatar'=> $user->avatar,
+                            'avatar'=> $user->avatar ? $user->avatar : url('/avatars/default.png'),
                             'verify_status'=>20,
                             'bid_count'=>5000,
 
@@ -157,7 +167,7 @@ class LoginController extends Controller
                         Auth::login($newUser);
 
 //                return redirect()->back();
-                        return view('user.social_success' ,['user'=>$newUser]);
+                        return view('user.social_success' ,['user'=>$newUser])->with('error_code', 5);
                     }
 
                 }

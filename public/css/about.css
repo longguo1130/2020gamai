@@ -1,0 +1,24 @@
+.about-header{
+    text-align: center;
+    margin: auto;
+    margin-bottom: 100px;
+}
+.about-header h5{
+    padding-bottom: 3px;
+
+}
+.about-header h1{
+    font-size: 50px;
+}
+.about-image img{
+    width: 95%;
+}
+.member-image img{
+    width: 60%;
+    border-radius:50%;
+}
+.member-image{
+    text-align: center;
+    margin-top: -35px;
+    margin-bottom: 50px;
+}

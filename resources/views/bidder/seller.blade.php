@@ -8,7 +8,7 @@
         {{ csrf_field() }}
         <div class="form-group">
             <div class="row">
-                <div class="col-md-6">
+                <div class="col-lg-8 col-md-12">
                     @if($product->status == 0)
 
 
@@ -16,6 +16,15 @@
                             <a href="{{route('products.edit',['id'=>$product->id])}}" class="btn btn-gray" style="width: 40%;">Edit Post</a>
                             <a href="{{route('products.destroy',['id'=>$product->id])}}" class="btn btn-gray" style="width: 40%;">Delete</a>
                         </div>
+                        <div class="modal fade" id="updateProduct" tabindex="-1" role="dialog" aria-labelledby="updateProduct" aria-hidden="true">
+                            <div class="modal-dialog" role="document" style="margin-top: 10%;">
+                                <div class="modal-content">
+                                    <h3>You updated your product successfully</h3>
+
+                                </div>
+                            </div>
+                        </div>
+
                         <hr>
                         <div class="form-group">
                             <p>{{ $product->text }}</p>
@@ -23,17 +32,12 @@
                         <hr>
                         <div class="media">
                             <div class="d-flex" style="padding-right: 15px;">
-                                @if(App\User::find($product->user_id)->provider)
-                                    <img src="{{App\User::find($product->user_id)->avatar}}" alt=""
-                                         style="width: 128px;height: 128px;border-radius: 50%;">
-                                @else
-                                <img src="{{ asset('avatars/'.App\User::find($product->user_id)->avatar) }}" alt=""
+                                <img src="{{App\User::find($product->user_id)->avatar }}" alt=""
                                      style="width: 128px;height: 128px;border-radius: 50%;">
-                                    @endif
                             </div>
                             <div class="media-body" style="vertical-align: middle;align-self: center;">
-                                <h6>{{Auth::user()->name}}</h6>
-                                <p><i class="fa fa-map-marked"></i> China</p>
+                                <h6>{{Auth::user()->username}}</h6>
+                                <p><i class="fa fa-map-marked"></i>{{Auth::user()->address1}} </p>
                                 <div class="star-ratings-sprite"><span style="width:{{App\User::find($product->user_id)->rating/5*100}}%" class="star-ratings-sprite-rating"></span></div>
                             </div>
 
@@ -56,4 +60,16 @@
     </form>
 
 
+@endsection
+@section('additional_js')
+    @if(!empty(Session::get('update')) && Session::get('update') == 1)
+        <script src="{{ asset('plugins/jQuery/jQuery-2.1.4.min.js') }}" type="text/javascript"></script>
+        <script src="{{ asset('js/bootstrap.4.3.1.min.js') }}" type="text/javascript"></script>
+
+        <script>
+            $(function() {
+                $('#updateProduct').modal('show');
+            });
+        </script>
+    @endif
 @endsection

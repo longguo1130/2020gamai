@@ -3,7 +3,7 @@
         <button class="btn dropdown-toggle" type="button" data-toggle="dropdown" aria-expanded="true" id="dropdownMenu1">
             <div class="category_item_left">
                 <div class="top_cat_name">Location</div>
-                <div class="bottom_cat_name">City</div>
+                <div class="bottom_cat_name" >City</div>
             </div>
             <div class="category_item_right ">
                 <a class="sortbtn"><i class="fa fa-angle-down"></i></a>

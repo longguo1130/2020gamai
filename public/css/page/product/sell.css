@@ -65,7 +65,7 @@ ul.thumbs-wrap li a {
 }
 ul.thumbs-wrap a {
     text-decoration: none;
-    margin-left: 60%;
+    /*margin-left: 60%;*/
     cursor: pointer;
     
     text-align: center;

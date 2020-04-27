@@ -10,6 +10,11 @@
                     <a class="nav-link active" id="selling-tab" href="#users" aria-controls="users"
                        data-toggle="tab" role="tab" aria-selected="true">Users</a>
                 </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" id="accounts-tab" href="#accounts" aria-controls="accounts"
+                       data-toggle="tab" role="tab" aria-selected="true">Accounts</a>
+                </li>
                 <li class="nav-item">
                     <a class="nav-link" id="bidding-tab" href="#bidding" aria-controls="bidding"
                        data-toggle="tab" role="tab" aria-selected="true">Bidding</a>
@@ -30,10 +35,10 @@
                     <a class="nav-link" id="favor-tab" href="#category" aria-controls="category" data-toggle="tab"
                        role="tab" aria-selected="false">Category</a>
                 </li>
-                <li>
-                    <a class="nav-link" id="favor-tab" href="#city" aria-controls="city" data-toggle="tab"
-                       role="tab" aria-selected="false">City</a>
-                </li>
+                {{--<li>--}}
+                    {{--<a class="nav-link" id="favor-tab" href="#city" aria-controls="city" data-toggle="tab"--}}
+                       {{--role="tab" aria-selected="false">City</a>--}}
+                {{--</li>--}}
             </ul>
             <div class="tab-content">
                 {{--<div class="tab-pane fade active show" id="active" role="tabpanel"--}}
@@ -41,6 +46,9 @@
 
                 {{--</div>--}}
                 <div class="tab-pane fade active show" id="users" role="tabpanel" aria-labelledby="users-tab">
+                </div>
+
+                <div class="tab-pane fade" id="accounts" role="tabpanel" aria-labelledby="accounts-tab">
                 </div>
                 <div class="tab-pane fade" id="bidding" role="tabpanel" aria-labelledby="bidding-tab">
                 </div>
@@ -56,9 +64,9 @@
                 <div class="tab-pane fade" id="category" role="tabpanel" aria-labelledby="category-tab">
                     Category...
                 </div>
-                <div class="tab-pane fade" id="city" role="tabpanel" aria-labelledby="city-tab">
-                    City...
-                </div>
+                {{--<div class="tab-pane fade" id="city" role="tabpanel" aria-labelledby="city-tab">--}}
+                    {{--City...--}}
+                {{--</div>--}}
             </div>
         </div>
     </div>
@@ -75,12 +83,13 @@
                 data: {},
                 success:function(data) {
                     $('#users').html(data.users_html);
+                    $('#accounts').html(data.accounts_html);
                     $('#reviews').html(data.review_html);
                     $('#messages').html(data.message_html);
                     $('#products').html(data.product_html);
                     $('#bidding').html(data.bidding_html);
                     $('#category').html(data.category_html);
-                    $('#city').html(data.city_html);
+                    // $('#city').html(data.city_html);
                 }
             });
         });

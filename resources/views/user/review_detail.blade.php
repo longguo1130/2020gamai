@@ -7,39 +7,33 @@
 
         <div class="panel-body">
             <div class="container" style="padding:12px;border: 1px solid #ddd; border-radius: 12px;">
-                <div class="row" style="overflow:scroll;">
-                    <div class="col-xl-4 col-lg-4 col-md-4 col-sm-4 col-4" style="border-right: 1px solid #ddd;">
+                <div class="row">
+                    <div class="col-xl-4 col-lg-4 col-md-6 col-sm-8 col-12" style="border-right: 1px solid #ddd;">
                         <div class="media">
-                            <div class="d-flex" style="padding-right: 15px;">
-                                @if($review->provider)
-
-                                    <img src="{{ $review->avatar }}" alt=""
-                                         style="width: 128px;height: 128px;border-radius: 50%;">
-                                @else
-                                    <img src="{{ asset('avatars/'.$review->avatar) }}" alt=""
-                                         style="width: 128px;height: 128px;border-radius: 50%;">
-                                @endif
+                            <div class="d-flex" style="padding-right: 15px;display: inline-block!important;">
+                                <img src="{{ $review->avatar }}" alt=""
+                                     style="border-radius: 50%;width:120px;height: 120px;">
                             </div>
                             <div class="media-body" style="vertical-align: middle;align-self: center;">
-                                <h2>{{$review->username}}</h2>
+                                <h2>{{$review->username}}
+                                    @if($review->membership)
+                                        <img src="{{asset('assets/'.App\Membership::where('id',$review->membership)->first()->icon)}}" alt="" style="height: 20px;"></h2>
+                                @endif
                                 @if($review->address1)
                                     <p><i class="fa fa-map-marked"></i> {{$review->address1}}</p>
                                 @endif
                                 <div class="star-ratings-sprite"><span style="width:{{$review->rating/5*100}}%" class="star-ratings-sprite-rating"></span></div>
+
                             </div>
 
                         </div>
                     </div>
-                    <div class="col-md-8">
+                    <div class="col-xl-8 col-lg-8 col-md-6 col-sm12-col-12">
                         <div class="status" style="display: flex;">
-                            <h4>Verification Status</h4>
-                            <h4 style="margin-left: 60%;">{{$review->verify_status}}%</h4>
-                        </div>
+                            <h4>Verification Status:{{$review->verify_status}}%</h4>
 
-                        <div class="progress">
-                            <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuemin="0" aria-valuemax="100" style="width: {{$review->verify_status}}%;"></div>
+
                         </div>
-                        Verified with <span></span>
 
                     </div>
 
@@ -78,7 +72,7 @@
                                             <div class="star-ratings-sprite" style="margin-top:-3px;"><span style="width:{{$review->rating*20}}%" class="star-ratings-sprite-rating"></span></div>
 
 
-                                            <h3 style="margin: -8px 30px;">{{App\Product::where('id',$review->product_id)->first()->seller==Auth::user()->username?'Seller':'Buyer'}}</h3>
+                                            <h3 style="margin: -8px 30px;">{{App\Product::where('id',$review->product_id)->first()->seller==$review->username?'Seller':'Buyer'}}</h3>
                                         </div>
                                         <div class="transaction-comments">
                                             {{$review->comments}}
@@ -100,35 +94,7 @@
         </div>
     </div>
 
-    <style>
-        .profile-contents .nav.nav-tabs {
-            display: block;
-            border: none;
-            padding: 10px 0px;
-        }
-
-        .profile-contents .nav.nav-tabs li {
-            display: inline-block;
-            margin-right: 7px;
-        }
-
-        .profile-contents .nav.nav-tabs li a.active {
-            background: #2f7dfc;
-            color: #fff;
-            border-color: #2f7dfc;
-        }
-
-        .profile-contents .nav.nav-tabs li a {
-            line-height: 38px;
-            background: #fff;
-            border: 1px solid #eeeeee;
-            padding: 0 30px;
-            color: #2a2a2a;
-            font-size: 13px;
-            font-weight: normal;
-            border-radius: 50px;
-        }
-    </style>
+   
 @endsection
 
 @section('additional_js')

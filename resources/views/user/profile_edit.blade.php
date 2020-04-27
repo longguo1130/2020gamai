@@ -20,12 +20,9 @@
                         {{ csrf_field() }}
 
                         <div class="dz-wrap">
-                            <div class="dz-message ">
-                                @if(App\User::find(Auth::user()->id)->provider)
-                                    <img src="{{App\User::find(Auth::user()->id)->avatar}}" alt="" class="thumbs-profile">
-                                @else
-                                    <img src="{{asset('avatars/'.App\User::find(Auth::user()->id)->avatar)}}" alt="" class="thumbs-profile">
-                                @endif
+                            <div class="dz-message user-avatar">
+                                <img src="{{App\User::find(Auth::user()->id)->avatar}}" alt="" class="thumbs-profile">
+
                             </div>
 
                         </div>
@@ -50,59 +47,44 @@
                         <div class="col-sm-6">
                             <div class="form-group{{ $errors->has('fullname') ? ' has-error' : '' }}">
                                 <label for="fullname" class="col-md-4 control-label">Full Name</label>
-                                <input id="fullname" type="text" class="form-control" name="fullname" value="{{ $post->fullname }}"
+                                <input id="fullname" type="text" class="form-control" name="fullname" value="{{App\UserAccount::find($post->id)->firstName.' '.App\UserAccount::find($post->id)->middleName.' '.App\UserAccount::find($post->id)->lastName }}" disabled
                                        required>
                             </div>
 
                             <div class="form-group{{ $errors->has('address1') ? ' has-error' : '' }}">
-                                <label for="location" class="col-md-4 control-label">City</label>
+                                <label for="location" class="col-md-4 control-label">Location</label>
                                 <input id="location" type="text" class="form-control" name="address1" value="{{$post->address1}}" required>
 
                             </div>
                             <div class="form-group{{ $errors->has('mobile') ? ' has-error' : '' }}">
-                                <label for="mobile" class="col-md-4 control-label">Mobile Number</label>
+                                <label for="mobile" class="col-md-6 control-label">Mobile Number</label>
                                 <input id="mobile" type="text" class="form-control" name="mobile" value="{{ $post->mobile }}"
                                        required>
                             </div>
                             <hr>
-
-                            {{--<div class="form-group{{ $errors->has('mobile') ? ' has-error' : '' }} ">--}}
-                                {{--<label for="password" class="col-md-4 control-label ">New Password</label>--}}
-                                {{--<input id="password" type="password" class="form-control @error('password') is-invalid @enderror" name="password"  autocomplete="new-password">--}}
-
-
-                            {{--</div>--}}
                             <div class="form-group">
 
                             </div>
                         </div>
 
                         <div class="col-sm-6">
-                            <div class="form-group{{ $errors->has('email1') ? ' has-error' : '' }}">
-                                <label for="email1" class="col-md-4 control-label">Email Address</label>
-                                <input id="email1" type="text" class="form-control" name="email1" value="{{ $post->email }}"
+                            <div class="form-group{{ $errors->has('email') ? ' has-error' : '' }}">
+                                <label for="email" class="col-md-6 control-label">Email Address</label>
+                                <input id="email" type="text" class="form-control" name="email" value="{{ $post->email }}" disabled
                                        required>
+                                @if(isset($message))<label for="">{{$message}}</label>
+                                    @endif
                             </div>
-                            <div class="form-group">
-                                <label for="address2" class="col-md-4 control-label">Location</label>
-                                <input id="address2" type="text" class="form-control" name="address2" value="{{ $post->address2 }}"
-                                >
-                            </div>
+
                             <div class="form-group{{ $errors->has('birthday') ? ' has-error' : '' }}">
                                 <label for="birthday" class="col-md-4 control-label">Birthday</label>
                                 <input id="birthday" type="text" class="birthday form-control" name="birthday" value="{{ $post->birthday }}"
                                        required>
                             </div>
-                            <hr>
-                            {{--<div class="form-group ">--}}
-                                {{--<label for="password-confirm" class="col-md-4 control-label">Password Confirm</label>--}}
 
-                                {{--<input id="password-confirm" type="password" class="form-control" name="password_confirmation"  autocomplete="new-password">--}}
-
-                            {{--</div>--}}
-
+                            <br>
                             <div class="form-group">
-                                <button type="submit" class="btn btn-info">Save profile</button> <button class="btn btn-success">Logout</button>
+                                <button type="submit" class="btn btn-info">Save profile</button> <a href="{{route('profile',['id'=>Auth::user()->id])}}" class="btn btn-success">Cancel</a>
                             </div>
                         </div>
                     </div>
@@ -122,6 +104,7 @@
             $('.birthday').datepicker({
                 format: 'mm-dd-yyyy'
             });
+
         });
 
     </script>

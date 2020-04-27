@@ -11,16 +11,18 @@
     </div>
     <hr>
     <div class="login_bar_section1">
-        <p><i class="fa fa-"></i> About Gamai</p>
-        <p><i class="fa fa-"></i> Terms and Condition</p>
-        <p><i class="fa fa-"></i> Privacy Policy</p>
+        <p><i class="fa fa-exclamation-circle"></i> <a href="{{route('about_us')}}">About Gamai</a></p>
+        <p><a href="{{route('term_condition')}}"><i class="fa fa-exclamation-circle"></i> Terms and Condition</a></p>
+        <p><a href="{{route('police')}}"><i class="fa fa-exclamation-circle"></i> Privacy Police</a></p>
+        <p><a href="{{route('contact_us')}}"><i class="fa fa-exclamation-circle"></i> Contact Us</a></p>
+
     </div>
     <hr>
     <div class="login_bar_section2">
-        <button class="btn"><i class="fa fa-facebook"></i></button>
-        <button class="btn"><i class="fa fa-instagram"></i></button>
-        <button class="btn"><i class="fa fa-twitter"></i></button>
-        <button class="btn"><i class="fa fa-youtube"></i></button>
+        <button class="btn"><a href="https://www.facebook.com/Gamaiph"><i class="fa fa-facebook"></i></a></button>
+        <button class="btn"><a href="https://www.instagram.com"><i class="fa fa-instagram"></i></a></button>
+        <button class="btn"><a href="https://www.twitter.com"><i class="fa fa-twitter"></i></a></button>
+        <button class="btn"><a href="https://www.youtube.com"><i class="fa fa-youtube"></i></a></button>
     </div>
 </div>
 <div id="mySellCanvasNav" class="overlay_nav" onclick="closeSellNav()"></div>

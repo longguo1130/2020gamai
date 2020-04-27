@@ -50,11 +50,19 @@
                                     @endforeach
                                 </select>
                             </div>
-                                <div class="form-group{{ $errors->has('city_id') ? ' has-error' : '' }}">
-                                    <label for="location" class="col-md-4 control-label">Location</label>
-                                    <input id="location" type="text" class="form-control" name="location" value="{{ old('location') }}">
-                                    <input id="city_id" type="hidden" class="form-control" name="city_id" value="{{ old('city_id') }}">
+                                {{--<div class="form-group{{ $errors->has('city_id') ? ' has-error' : '' }}">--}}
+                                    {{--<label for="location" class="col-md-4 control-label">Location</label>--}}
+                                    {{--<input id="location" type="text" class="form-control" name="location" value="{{ old('location') }}">--}}
+                                    {{--<input id="city_id" type="hidden" class="form-control" name="city_id" value="{{ old('city_id') }}">--}}
+                                {{--</div>--}}
+                                <div class="form-group{{ $errors->has('location') ? ' has-error' : '' }}">
+                                    <label>Location <span class="text-danger"></span></label>
+                                    <input type="text" name="autocomplete" id="autocomplete" placeholder="Loading..." class="form-control" value="">
+                                    @if($errors->has(['location']))
+                                        <p class="text-danger">{{ $errors->first('location') }}</p>
+                                    @endif
                                 </div>
+
                                 <div class="form-group{{ $errors->has('price') ? ' has-error' : '' }}">
                                     <label for="price" class="col-md-4 control-label">Enter Price</label>
                                     <input id="price" type="text" class="form-control" name="price" value="{{ old('price') }}"
@@ -98,5 +106,23 @@
     <script src="{{ asset('plugins/dropzone/dropzone.js') }}"></script>
     <script src="{{ asset('plugins/jQuery-Autocomplete-master/dist/jquery.autocomplete.js') }}"></script>
     <script src="{{ asset('js/page/product/create.js') }}"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC7DF6McPxX3EaMwltYNDp5VLbfRpy3dro &libraries=places&callback=initAutocomplete"
+            async defer></script>
+    <script>
+        function initAutocomplete(){
+            var componentForm = {
+                street_number: 'short_name',
+                route: 'long_name',
+                locality: 'long_name',
+                administrative_area_level_1: 'short_name',
+                country: 'long_name',
+                postal_code: 'short_name'
+            };
 
+            var input = document.getElementById('autocomplete');
+            input.setAttribute('placeholder','Enter the street address (e.g. 2401 Tampa Dr, Orlando Fl 34219)');
+
+            var autocomplete = new google.maps.places.Autocomplete(input, {types: ['geocode']});
+        }
+    </script>
 @endsection

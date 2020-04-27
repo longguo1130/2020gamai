@@ -21,7 +21,7 @@ class Product extends Model
     }
 
     public function firstImage(){
-    	return $this->hasOne('App\productImages','product_id','id')->latest();
+    	return $this->hasOne('App\productImages','product_id','id')->oldest();
     }
 
     public function bidsNum(){

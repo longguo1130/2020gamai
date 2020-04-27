@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Favorite;
 use App\Feedback;
+use App\Notifications\SentBid;
 use Illuminate\Http\Request;
 
 
@@ -57,7 +58,7 @@ class BidderController extends Controller
             return view('bidder.show',['product'=>$product,'bid'=>$bid,'success'=>$success]);
         }
         else
-        return view('bidder.create',['product'=>$product,'bid'=>$bid,'success'=>$success]);
+            return view('bidder.create',['product'=>$product,'bid'=>$bid,'success'=>$success]);
     }
 
     /**
@@ -88,9 +89,10 @@ class BidderController extends Controller
         $bid->seller_status=0;
         $bid->buyer_status=0;
         $bid->save();
-        Auth::user()->update(['bid_count'=>Auth::user()->bid_count-$request->bid_price]);
-
-        return redirect()->back();
+        Auth::user()->update(['bid_count'=>Auth::user()->bid_count-$request->price]);
+        $buyer = Auth::user();
+        User::find($bid->seller_id)->notify(new SentBid($buyer,$bid));
+        return back()->withSuccess("You sent bid successfully");
     }
 
     /**
@@ -123,11 +125,17 @@ class BidderController extends Controller
 
     public function accept(Request $request ,$id){
 
-        $update = [
-            'status'=>2
-        ];
-        Bid::where('product_id',$id)->where('buyer_id',$request->buyer_id)->update($update);
 
+        $accepted_bid = Bid::where('product_id',$id)->where('buyer_id',$request->buyer_id)->first();
+        $accepted_bid->status = 2;
+        $accepted_bid->save();
+        User::where('id',$accepted_bid->buyer_id)->first()->notify(new SentBid(User::where('id',$accepted_bid->seller_id)->first(),$accepted_bid));
+
+        $bids = Bid::where('product_id',$id)->where('buyer_id','<>',$request->buyer_id)->get();
+        foreach ($bids as $bid){
+            User::where('id',$bid->buyer_id)->first()->update(['bid_count'=>$bid->price+User::where('id',$bid->buyer_id)->first()->bid_count]);
+            User::where('id',$bid->buyer_id)->first()->notify(new SentBid(User::where('id',$bid->seller_id)->first(),$bid));
+        }
         $product = Product::find($id);
 
         $product->status = 2;
@@ -138,14 +146,20 @@ class BidderController extends Controller
 
     }
 
-    public function cancel($id){
+    public function cancel( $id){
+        $bid = Bid::where('product_id',$id)->where('status',2)->first();
         $product = Product::find($id);
         $product->status = 0;
         $product->save();
-        $update = [
-            'status'=>0
-        ];
-        Bid::where('product_id',$id)->where('status',2)->update($update);
+        $bid->status = 0;
+        $bid->save();
+
+        // User::find($bid->buyer_id)->update(['bid_count' => $bid->price + User::find($bid->buyer_id)->bid_count]);
+
+        $bids = Bid::where('product_id',$id)->where('buyer_id','<>',$bid->buyer_id)->get();
+        foreach ($bids as $bid){
+            User::where('id',$bid->buyer_id)->first()->update(['bid_count'=>User::where('id',$bid->buyer_id)->first()->bid_count-$bid->price]);
+        }
         return view('user.profile',['user'=>Auth::user()]);
 
     }
@@ -160,7 +174,7 @@ class BidderController extends Controller
         Bid::where('product_id',$id)->where('status',2)->update($update);
         $bid = Bid::where('product_id',$id)->where('status',1)->first();
         $user = User::where('id',$bid->buyer_id)->first();
-        $user->update(['bid_count'=>$bid->bid_price+$user->bid_count]);
+        $user->update(['bid_count'=>$bid->price+$user->bid_count]);
 
         Bid::where('product_id',$id)->where('status','<>',1)->delete();
         $buyer =  User::where('id',$bid->buyer_id)->first();
@@ -200,11 +214,14 @@ class BidderController extends Controller
 
         $seller->save();
 
+//        $buyer->notify(new SentBid($seller,$bid));
+
+
         return view('user.feedback',['bid'=>$bid]);
     }
 
     public function provide_feedback($id){
-        $bid = Bid::find($id)->first();
+        $bid = Bid::find($id);
         return view('user.feedback',['bid'=>$bid]);
     }
     /**
@@ -234,19 +251,19 @@ class BidderController extends Controller
     }
 
     public function feedback(Request $request){
-       $bid = Bid::find($request->id);
-       $feedback = Feedback::create();
-       $feedback->from_user = Auth::user()->id;
+        $bid = Bid::find($request->id);
+        $feedback = Feedback::create();
+        $feedback->from_user = Auth::user()->id;
 
-       $feedback->to_user = $bid->seller_id==Auth::user()->id?$bid->buyer_id:$bid->seller_id;
+        $feedback->to_user = $bid->seller_id==Auth::user()->id?$bid->buyer_id:$bid->seller_id;
 
-       $feedback->feedback_type = $request->feedback_type;
-       $feedback->rating = $request->rating;
-       $feedback->comments = $request->comments;
-       $feedback->product_id = $bid->product_id;
-       $feedback->save();
+        $feedback->feedback_type = $request->feedback_type;
+        $feedback->rating = $request->rating;
+        $feedback->comments = $request->comments;
+        $feedback->product_id = $bid->product_id;
+        $feedback->save();
 
-       return redirect('profile');
+        return redirect('profile');
 
     }
 
@@ -260,7 +277,7 @@ class BidderController extends Controller
     {
         $bid = Bid::find($id);
         $user = User::where('id',$bid->buyer_id)->first();
-        $user->update(['bid_count'=>$user->bid_count+$bid->bid_price]);
+        $user->update(['bid_count'=>$user->bid_count+$bid->price]);
         $product = Product::where('id',$bid->product_id)->first();
         $bid->delete();
         $success = "You deleted your bid successfully.";
@@ -275,4 +292,16 @@ class BidderController extends Controller
         return view('user.review_detail',['review'=>$user]);
     }
 
+    public function getTranactionInfo(Request $request){
+        $bid = Bid::find($request->bid_id);
+        if ($bid->seller_id == $request->user_id)
+            $html ='';
+        else
+            $html = view('chat.chat-action')->with('bid', $bid)->render();
+        return response()->json([
+            'status' => 1,
+            'html'=> $html,
+        ]);
+
+    }
 }

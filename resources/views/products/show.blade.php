@@ -12,13 +12,31 @@
                     <div class="row">
                         <div class="col-sm-6">
                             <div class="product_slider_img">
-                                <div id="vertical">
-                                    @foreach($product->images as $image)
-                                        <div data-thumb="{{ asset('thumbnails/'.$image->path) }}">
-                                            <img src="{{ asset('images/'.$image->path) }}" style=" height: 300px;width: 300px;"/>
-                                        </div>
-                                    @endforeach
+                                {{--<div id="vertical">--}}
+                                {{--@foreach($product->images as $image)--}}
+                                {{--<div data-thumb="{{ asset('thumbnails/'.$image->path) }}" style="text-align: center" >--}}
+                                {{--<div class="">--}}
+                                {{--<img src="{{ asset('thumbnails/'.$image->path) }}" style=" height: 300px;"/>--}}
+                                {{--</div>--}}
+                                {{--</div>--}}
+                                {{--@endforeach--}}
+                                {{--</div>--}}
+                                <div class="first-image" style="text-align: center;">
+                                    <a data-fancybox="gallery" href="{{ asset('images/'.$product->firstImage->path) }}">
+
+                                        <img src="{{ asset('thumbnails/'.$product->firstImage->path) }}" alt="" style="width: 75%;border: 2px solid #d7d7d7;">
+                                    </a>
                                 </div>
+                                <ul class="thumbs-wrap">
+                                    @foreach($product->images as $img)
+                                        <li class="thumb" data-id="{{ $img->id }}">
+                                            <a data-fancybox="gallery" href="{{ asset('images/'.$img->path) }}">
+                                                <img src="{{ asset('thumbnails/'.$img->path) }}">
+
+                                            </a>
+                                        </li>
+                                    @endforeach
+                                </ul>
                             </div>
                         </div>
                         <div class="col-sm-6">
@@ -38,8 +56,8 @@
                                                 <h2>Share this listing</h2>
                                             </div>
                                             <div class="modal-body">
-                                                <a href="http://facebook.com"><img src="{{asset('assets/Asset 2@4x.png')}}" alt="" style="width: 40%;height: 40px;"></a>
-                                                <a href="http://facebook.com" ><img src="{{asset('assets/Asset 2@4x.png')}}" alt="" style="width: 40%;height: 40px;"></a>
+                                                <a href="https://www.facebook.com/sharer/sharer.php?u={{url()->current()}}&display=popup"><img src="{{asset('assets/Asset 2@4x.png')}}" alt="" style="width: 40%;height: 40px;    margin-left: 17px;"> </a>
+
                                                 <div class="copylink" style="text-align: center;margin-top: 10px;width: 93%;">
                                                     <input type="text" value="{{url()->current()}}" id="myInput" style="width: 60%;">
                                                     <button onclick="myFunction()">Copy Link</button>
@@ -73,15 +91,10 @@
                             </div>
                             <hr>
                             <div class="seller_info_wrap media">
-                                @if(App\User::find($product->user_id)->provider)
-                                    <img src="{{App\User::find($product->user_id)->avatar}}" alt=""
-                                         style="width: 128px;height: 128px;border-radius: 50%;">
-                                @else
-                                    <img src="{{ asset('avatars/'.App\User::find($product->user_id)->avatar) }}" alt=""
-                                         style="width: 128px;height: 128px;border-radius: 50%;">
-                                @endif
+                                <img src="{{ App\User::find($product->user_id)->avatar }}" alt=""
+                                     style="width: 128px;height: 128px;border-radius: 50%;">
                                 <div class="seller_info media-body" style="vertical-align: middle;align-self: center;">
-                                    <span>Seller Name :{{App\User::find($product->user_id)->name }}</span>
+                                    <a href="{{route('bidder.review',['id'=>App\User::find($product->user_id)->id])}}"><span>Seller :{{App\User::find($product->user_id)->username }}</span></a>
                                     <div class="star-ratings-sprite"><span style="width:{{App\User::find($product->user_id)->rating/5*100}}%" class="star-ratings-sprite-rating"></span></div>
                                 </div>
                             </div>
@@ -94,16 +107,43 @@
         <div class="container py-4">
             <div class="row ">
                 <div class="col-md-10">
-                    <div class="product_list"></div>
                     <a href="">See more</a>
                     <hr>
+                    <ul class="nav nav-tabs" role="tablist">
+                        <li class="nav-item">
+                            <a class="nav-link active" id="related-tab" href="#related" aria-controls="related"
+                               data-toggle="tab" role="tab" aria-selected="true">Other related products</a>
+                        </li>
+                        <li>
+                            <a class="nav-link" id="nearby-tab" href="#nearby" aria-controls="nearby" data-toggle="tab"
+                               role="tab" aria-selected="false">Nearby</a>
+                        </li>
+                        <li>
+                            <a class="nav-link" id="nearby-tab" href="#more" aria-controls="more" data-toggle="tab"
+                               role="tab" aria-selected="false">More Products</a>
+                        </li>
+
+                    </ul>
+                    <div class="tab-content">
+                        <div class="tab-pane fade active show" id="related" role="tabpanel" aria-labelledby="related-tab">
+                            No more related products
+                        </div>
+                        <div class="tab-pane fade" id="nearby" role="tabpanel" aria-labelledby="nearby-tab">
+                            No more nearby products
+                        </div>
+                        <div class="tab-pane fade" id="more" role="tabpanel" aria-labelledby="more-tab">
+                            No more products
+                        </div>
+
+                    </div>
                 </div>
+                    <hr>
                 <div class="col-md-2">
-                    <img src="{{asset('images/adv.png')}}" style="height: 600px;width:100%;">
+                    {{--<img src="{{asset('images/adv.png')}}" style="height: 600px;width:100%;">--}}
                 </div>
             </div>
         </div>
-    </div>
+    </div></div>
 @endsection
 @section('additional_js')
     <script>

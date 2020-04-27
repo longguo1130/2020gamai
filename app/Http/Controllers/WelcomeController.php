@@ -20,7 +20,7 @@ class WelcomeController extends Controller
     
     public function index()
     {
-      
+
         $post = Product::find($id);
         //$postImage = ProductImages::where('productId',$id)->get();
         $postImage = DB::table('productImages')->where('productId',$id)->get();

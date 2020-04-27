@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Category;
 use App\Favorite;
 use Illuminate\Http\Request;
 
@@ -30,7 +31,7 @@ class ProductController extends Controller
     public function __construct()
     {
         parent::__construct();
-        $this->middleware('auth',['except' =>['show']]);
+        $this->middleware('auth',['except' =>['show','product_related_detail']]);
     }
 
     public function index()
@@ -61,7 +62,7 @@ class ProductController extends Controller
 
         $request->validate([
             'title' => 'required|max:255',
-            'city_id'=> 'required|max:255',
+
             'transaction_type' => 'required|not_in:0',
             'category_id' => 'required|numeric|not_in:0',
             'price' => 'required|numeric',
@@ -70,7 +71,7 @@ class ProductController extends Controller
         ]);
         $post = new Product;
         $post->title = $request->title;
-        $post->city_id = $request->city_id;
+        $post->location = $request->autocomplete;
         $post->price = $request->price;
         $post->category_id = $request->category_id;
         $post->transaction_type = $request->transaction_type;
@@ -106,6 +107,7 @@ class ProductController extends Controller
      */
     public function show($id)
     {
+
        
         $product = Product::find($id);
 
@@ -118,21 +120,35 @@ class ProductController extends Controller
 
         if (Auth::check())
         {
+            foreach (Auth::user()->unreadNotifications as $notification){
+                if($notification->data['product_id']==$id)
+                    $notification->markAsRead();
+            }
             if ($product->user_id == Auth::user()->id){
                 if ($product->status == 1){
                     $bid = Bid::where('product_id',$product->id)->where('status',1)->get();
                     return view('bidder.sold',['product'=>$product,'bid'=>$bid]);
                 }
+                foreach (Auth::user()->unreadNotifications as $notification){
+                    if($notification->data['product_id']==$id)
+                        $notification->markAsRead();
+                }
                 return view('bidder.seller',['product'=>$product,'bid'=>$bid]);
             }
-            $check = DB::table('bids')->where('product_id', $id)->where('buyer_id', Auth::user()->id)->get();
+            else{
+                $check = DB::table('bids')->where('product_id', $id)->where('buyer_id', Auth::user()->id)->get();
+                if (count($check) > 0){
+                    return view('bidder.show',['product'=>$product,'bid'=>$bid,'success'=>$success]);
+                }
+                else
+                    return view('products.show_logged',['product'=>$product,'bid'=>$bid,'success'=>$success]);
+            }
         }
 
-        if (count($check) > 0){
-            return view('bidder.show',['product'=>$product,'bid'=>$bid,'success'=>$success]);
-        }
+
         else{
-            $view = Auth::check() ? 'products.show_logged' : 'products.show';
+
+            $view = 'products.show';
             return view ($view,['product'=>$product,'bid'=>$bid,'success'=>""]);
         }
 
@@ -148,6 +164,7 @@ class ProductController extends Controller
      */
     public function edit($id)
     {
+
         $post = Product::find($id);
 
         $postImage = $post->images;
@@ -212,11 +229,11 @@ class ProductController extends Controller
 
         }
 
-
+        $success = "";
 
         //Session::flash('flash_message', 'Task successfully added!');
 
-        return redirect()->back();
+        return redirect('products/show/'.$post->id)->with('update',1);
     }
 
     /**
@@ -243,22 +260,31 @@ class ProductController extends Controller
         $input = Input::all();
 
         if(Input::hasFile('file')) {
-            /*
-            $rules = array(
-                'file' => 'mimes:jpg,jpeg,bmp,png,pdf|max:3000',
-            );
-            $validation = Validator::make($input, $rules);
-            if ($validation->fails()) {
-                return response()->json($validation->errors()->first(), 400);
-            }
-            */
             $file = Input::file('file');
+            if ($file->extension() == 'jpeg' || $file->extension() == 'JPEG')
+            $exif = exif_read_data($file);
+
             $filename = $file->getClientOriginalName();
             $upload_filename = time().'.'.$file->extension();
 
             $input['imagename'] = $upload_filename;
             $destinationPath = public_path('thumbnails');
             $img = Image::make($file->path());
+            if(!empty($exif['Orientation'])) {
+                switch($exif['Orientation']) {
+                    case 8:
+                        $img->rotate(90);
+                        break;
+                    case 3:
+                        $img->rotate(180);
+                        break;
+                    case 6:
+                        $img->rotate(270);
+                        break;
+
+                }
+            }
+
             $img->resize(128, 128, function ($constraint) {
                 $constraint->aspectRatio();
             })->save($destinationPath.DIRECTORY_SEPARATOR.$input['imagename']);
@@ -322,5 +348,40 @@ class ProductController extends Controller
         }
 
         return response()->json(['status'=>$status, 'product_id'=>$product_id]);
+    }
+
+    public function product_related_detail(Request $request){
+        $user_id = Auth::check() ? Auth::user()->id : null;
+
+        $favorites = Favorite::where('user_id',$user_id)->pluck('product_id')->all();
+
+        $product = Product::find($request->id);
+
+        $related_products = Product::where('category_id',$product->category_id)->where('id','<>',$product->id)->where('status',0)->get();
+        $related_html = view('products.related',['products'=>$related_products,'user_id'=>$user_id,'favorites'=>$favorites,'state'=>1])->render();
+
+        $nearby_products = Product::where('location',$product->location)->where('id','<>',$product->id)->where('status',0)->get();
+        $nearby_html = view('products.related',['products'=>$nearby_products,'user_id'=>$user_id,'favorites'=>$favorites,'state'=>2])->render();
+        $more_products = Product::where('id','<>',$product->id)->where('status',0)->get();
+
+        $more_html = view('products.related',['products'=>$more_products,'user_id'=>$user_id,'favorites'=>$favorites,'state'=>3])->render();
+
+       return response()->json([
+          'status' => 'success',
+          'related_html' => $related_html,
+          'nearby_html' => $nearby_html,
+          'more_html' => $more_html,
+       ]);
+
+
+    }
+
+    public function get_sub_category(Request $request){
+
+        $sub_category = Category::where('parent_id',$request->parent_id)->get();
+        return response()->json([
+            'status' => 'success',
+            'data' => $sub_category,
+        ]);
     }
 }

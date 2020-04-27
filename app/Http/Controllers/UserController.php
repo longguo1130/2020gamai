@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Favorite;
+use App\UserAccount;
 use App\UserImages;
 use Illuminate\Http\Request;
 
@@ -51,27 +52,32 @@ class UserController extends Controller
 
         $user = User::find(Auth::user()->id);
 
-        $possible_time = time()-$user->membership_created_at;
 
-
-
-
-        if($user->membership_type == 1){
-            if ($possible_time>86400*365){
-                $user->update(['bid_count'=>5000]);
-
-            }
-            else{
-
-                if ($possible_time>2592000)
-                    $user->update(['bid_count'=>$user->bid_count+Membership::where('id',$user->membership)->bid_limit]);
-            }
-        }
-        elseif($user->membership_type == 2){
-            if ($possible_time>86400*30){
-                $user->update(['bid_count'=>5000]);
-            }
-        }
+//        $possible_time = time()-$user->membership_created_at;
+//
+//
+//
+//
+//        if($user->membership_type == 1){
+//
+//            if ($possible_time>86400*365){
+//                $user->update(['bid_count'=>5000]);
+//
+//
+//            }
+//            else{
+//
+//
+//                if ($possible_time>2592000)
+//                    $user->update(['bid_count'=>$user->bid_count+Membership::where('id',$user->membership)->first()->bid_limit]);
+//
+//            }
+//        }
+//        elseif($user->membership_type == 2){
+//            if ($possible_time>86400*30){
+//                $user->update(['bid_count'=>5000]);
+//            }
+//        }
 
 
         $feedbacks = Feedback::where('to_user',Auth::user()->id)->where('feedback_type',0)->get();
@@ -107,24 +113,18 @@ class UserController extends Controller
     public function store(Request $request ){
         $request->validate([
             'password' => 'confirmed',
-
-
         ]);
+
+
 
 
         $user = User::find($request->id);
         $user->fullname = $request->fullname;
         $user->address1 = $request->address1;
-
         $user->address2 = $request->address2;
         $user->mobile = $request->mobile;
-        $user->email = $request->email1;
         $user->birthday = $request->birthday;
         $user->update_count = $user->update_count+1;
-        $user->password = Hash::make($request->password);
-        if ($user->update_count == 1){
-            $user->verify_status = $user->verify_status + 10;
-        }
 
         $user->save();
 
@@ -214,7 +214,7 @@ class UserController extends Controller
                 ]);
                 $upload->save();
                 $user = User::find(Auth::user()->id);
-                $user->avatar = $upload_filename;
+                $user->avatar = url('/avatars/'.$upload_filename);
                 $user->save();
                 return response()->json([
                     "status" => "success",
@@ -257,6 +257,13 @@ class UserController extends Controller
 
         return view('user.chatting',['user'=>$user,'bid'=>$bid,'messages'=>$messages]);
     }
+    public  function delete_transaction(Request $request){
+        $user = User::find($request->id);
+
+        Bid::where('seller_id',Auth::user()->id)->where('buyer_id',$user->id)->update(['seller_status'=>1]);
+        Bid::where('buyer_id',Auth::user()->id)->where('seller_id',$user->id)->update(['seller_status'=>1]);
+        return redirect()->back();
+    }
 
     public function social_success(Request $request){
 
@@ -267,7 +274,7 @@ class UserController extends Controller
         try{
             $user = User::find($request->id);
             $user->username = $request->username;
-            $user->address1 = $request->location;
+            $user->address1 = $request->autocomplete;
             $user->email_verified_at = now();
             $user->password = Hash::make($request->password);
             $user->save();
@@ -333,8 +340,8 @@ class UserController extends Controller
                 'new_password' => ['required'],
                 'new_confirm_password' => ['same:new_password'],
             ]);
-             $user->update(['password'=> Hash::make($request->new_password)]);
-             return redirect('profile');
+            $user->update(['password'=> Hash::make($request->new_password)]);
+            return redirect('profile');
         }
         else{
             return redirect()->back();
@@ -398,5 +405,49 @@ class UserController extends Controller
         ]);
     }
 
+    public function email_verify(Request  $request){
+
+        $email = base64_decode($request->token);
+        $user = User::where('email',$email)->first();
+        $user->email_verified_at = now();
+        $user->verify_status = $user->verify_status + 5;
+        $user->save();
+
+        return view('user.profile',['user' =>$user]);
+
+    }
+
+    public function make_moderator(){
+        $user = Auth::user();
+        $user->update(['user_role'=>1]);
+        return redirect()->back();
+    }
+
+    public function validate_id(Request $request){
+        $user_account = UserAccount::updateOrCreate(
+            ['id'=>$request->id],
+            [
+                'lastName' => $request->lastName,
+                'firstName' => $request->firstName,
+                'middleName' => $request->middleName,
+                'house_number' => $request->house_number,
+                'street' => $request->street,
+                'town' => $request->town,
+                'city' => $request->city,
+                'province' => $request->province,
+                'country' => $request->country,
+                'zipcode' => $request->zipcode,
+                'birthday' => $request->birthday,
+            ]
+        );
+        $user_account->update(['update_count'=>$user_account->update_count+1]);
+        $user = User::find($user_account->id);
+        if ($user_account->update_count == 1)
+            $user->update(['verify_status'=>$user->verify_status+10]);
+
+
+        return view('user.profile',['user' =>User::find($request->id)]);
+
+    }
 
 }

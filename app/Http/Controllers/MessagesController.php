@@ -33,7 +33,7 @@ class MessagesController extends Controller
             $query->where('from_user', Auth::user()->id)->where('to_user', $request->user_id);
         })->orWhere(function ($query) use ($request) {
             $query->where('from_user', $request->user_id)->where('to_user', Auth::user()->id);
-        })->orderBy('created_at', 'ASC')->limit(10)->get();
+        })->orderBy('created_at', 'ASC')->limit(100)->get();
 
         if ($request->kind == 'full') {
             $html = view('chat.chat-content')->with('messages', $messages)->render();
@@ -59,7 +59,7 @@ class MessagesController extends Controller
     public function postSendMessage(Request $request)
     {
 
-        if (!$request->to_user || !$request->message) {
+        if(!$request->to_user || !$request->message) {
             return response()->json(['state' => 0, 'data' => 'failed']);
         }
 
@@ -67,33 +67,23 @@ class MessagesController extends Controller
         $message->from_user = Auth::user()->id;
         $message->to_user = $request->to_user;
         $message->content = $request->message;
+        $message->product_id = $request->product_id;
         $message->save();
-        if ($request->kind == 'full') {
 
-            $messages = Message::where(function ($query) use ($request) {
-                $query->where('from_user', Auth::user()->id)->where('to_user', $request->user_id);
-            })->orWhere(function ($query) use ($request) {
-                $query->where('from_user', $request->user_id)->where('to_user', Auth::user()->id);
-            })->orderBy('created_at', 'ASC')->limit(10)->get();
-            $html = view('chat.chat-content')->with('messages', $messages)->render();
+        // prepare some data to send with the response
+        $message->dateTimeStr = date("Y-m-dTH:i", strtotime($message->created_at->toDateTimeString()));
+        $message->dateHumanReadable = $message->created_at->diffForHumans();
+        $message->fromUserName = $message->fromUser->name;
+        $message->from_user_id = Auth::user()->id;
+        $message->from_user_avatar = $message->fromUser->avatar;
+        $message->toUserName = $message->toUser->name;
+        $message->to_user_id = $request->to_user;
+        $message->to_user_avatar = $message->toUser->avatar;
+        $message->product_id = $request->product_id;
 
-            return response()->json(['state' => 1, 'html' => $html]);
-        }
-        else{
-            // prepare some data to send with the response
-            $message->dateTimeStr = date("Y-m-dTH:i", strtotime($message->created_at->toDateTimeString()));
-            $message->dateHumanReadable = $message->created_at->diffForHumans();
-            $message->fromUserName = $message->fromUser->name;
-            $message->from_user_id = Auth::user()->id;
-            $message->from_user_avatar = $message->fromUser->avatar;
-            $message->toUserName = $message->toUser->name;
-            $message->to_user_id = $request->to_user;
-            $message->to_user_avatar = $message->toUser->avatar;
+        PusherFactory::make()->trigger('chat', 'send', ['data' => $message]);
 
-            PusherFactory::make()->trigger('chat', 'send', ['data' => $message]);
-
-            return response()->json(['state' => 1, 'data' => $message]);
-        }
+        return response()->json(['state' => 1, 'data' => $message]);
 
 
     }
@@ -129,7 +119,7 @@ class MessagesController extends Controller
 
             foreach ($lastMessages as $message) {
 
-                $return[] = view('message-line')->with('message', $message)->render();
+                $return[] = view('chat.message-line')->with('message', $message)->render();
             }
 
             PusherFactory::make()->trigger('chat', 'oldMsgs', ['to_user' => $request->to_user, 'data' => $return]);

@@ -8,7 +8,6 @@ $(function () {
     let channel = pusher.subscribe('chat');
 
 
-
     // on click on any chat btn render the chat box
     $(document).on("click", ".chat-toggle", function (e) {
         e.preventDefault();
@@ -29,7 +28,7 @@ $(function () {
 
                 loadLatestMessages(chatBox, user_id);
 
-                chatBox.find(".chat-area").animate({scrollTop: chatBox.find(".chat-area").offset().top + chatBox.find(".chat-area").outerHeight(true)}, 800, 'swing');
+                chatBox.find(".chat-area").animate({scrollTop: chatBox.find(".chat-area").offset().top + $(document).height()}, 800, 'swing');
             }
         });
     });
@@ -55,7 +54,17 @@ $(function () {
     $(document).on("click", ".btn-chat", function (e) {
         send($(this).attr('data-to-user'), $("#chat_box_" + $(this).attr('data-to-user')).find(".chat_input").val());
     });
+    $(document).on("click", "#first_message", function (e) {
 
+
+        send($(this).attr('data-to-user'),'Hey, I am interested in your bid');
+    });
+    $(document).on("keypress", ".chat_input", function (event) {
+        var keycode = (event.keyCode ? event.keyCode : event.which);
+        if(keycode == '13'){
+            send($(this).parents(".form-controls").find('.btn-chat').attr('data-to-user'), $(this).val());
+        }
+    });
     // listen for the send event, this event will be triggered on click the send btn
     channel.bind('send', function(data) {
         displayMessage(data.data);
@@ -106,14 +115,14 @@ function getMessageSenderHtml(message)
 {
     return `
            <div class="row msg_container base_sent" data-message-id="${message.id}">
-        <div class="col-md-10 col-xs-10">
+        <div class="col-md-9 col-xs-9 col-sm-8 col-8">
             <div class="messages msg_sent text-right">
                 <p>${message.content}</p>
                 <time datetime="${message.dateTimeStr}"> ${message.fromUserName} • ${message.dateHumanReadable} </time>
             </div>
         </div>
-        <div class="col-md-2 col-xs-2 avatar">
-            <img src="` + base_url +  '/avatars/' + message.from_user_avatar + `" width="50" height="50" class="img-responsive">
+        <div class="col-md-3 col-xs-3 col-sm-4 col-4 avatar">
+            <img src="` + message.from_user_avatar + `"  class="img-responsive">
         </div>
     </div>
     `;
@@ -131,10 +140,10 @@ function getMessageReceiverHtml(message)
 {
     return `
            <div class="row msg_container base_receive" data-message-id="${message.id}">
-           <div class="col-md-2 col-xs-2 avatar">
-             <img src="` + base_url +  '/avatars/' + message.to_user_avatar + `" width="50" height="50" class="img-responsive">
+           <div class="col-md-3 col-xs-3 col-sm-4 col-4 avatar">
+             <img src="`+ message.from_user_avatar + `" class="img-responsive">
            </div>
-        <div class="col-md-10 col-xs-10">
+        <div class="col-md-9 col-xs-9 col-sm-8 col-8">
             <div class="messages msg_receive text-left">
                 <p>${message.content}</p>
                 <time datetime="${message.dateTimeStr}"> ${message.toUserName}  • ${message.dateHumanReadable} </time>
@@ -233,8 +242,10 @@ function send(to_user, message)
         method: "POST",
         dataType: "json",
         beforeSend: function () {
+            // console.log('adfasdf');
             if(chat_area.find(".loader").length  == 0) {
                 chat_area.append(loaderHtml());
+
             }
         },
         success: function (response) {
@@ -243,7 +254,7 @@ function send(to_user, message)
             chat_area.find(".loader").remove();
             chat_box.find(".btn-chat").prop("disabled", true);
             chat_box.find(".chat_input").val("");
-            chat_area.animate({scrollTop: chat_area.offset().top + chat_area.outerHeight(true)}, 800, 'swing');
+            chat_area.animate({scrollTop: chat_area.offset().top + $(document).height()}, 800, 'swing');
         }
     });
 }
@@ -255,7 +266,7 @@ function send(to_user, message)
  */
 function displayMessage(message)
 {
-    let alert_sound = document.getElementById("chat-alert-sound");
+    // let alert_sound = document.getElementById("chat-alert-sound");
 
     if($("#current_user").val() == message.from_user_id) {
 
@@ -265,7 +276,7 @@ function displayMessage(message)
 
     } else if($("#current_user").val() == message.to_user_id) {
 
-        alert_sound.play();
+        // alert_sound.play();
 
         // for the receiver user check if the chat box is already opened otherwise open it
         cloneChatBox(message.from_user_id, message.fromUserName, function () {
@@ -278,7 +289,7 @@ function displayMessage(message)
 
                 loadLatestMessages(chatBox, message.from_user_id);
 
-                chatBox.find(".chat-area").animate({scrollTop: chatBox.find(".chat-area").offset().top + chatBox.find(".chat-area").outerHeight(true)}, 800, 'swing');
+                chatBox.find(".chat-area").animate({scrollTop: chatBox.find(".chat-area").offset().top + $(document).height()}, 800, 'swing');
             } else {
 
                 let messageLine = getMessageReceiverHtml(message);

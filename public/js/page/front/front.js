@@ -1,4 +1,3 @@
-
 $(function () {
     $.ajaxSetup({
         headers: {
@@ -31,12 +30,12 @@ Front = {
 
 
         });
-        $('.dropdown-toggle').on('click', function () {
-
-            document.getElementById("myCanvasNav").style.width = "100%";
-            document.getElementById("myCanvasNav").style.opacity = "0.8";
-
-        });
+        // $('.dropdown-toggle').on('click', function () {
+        //
+        //     document.getElementById("myCanvasNav").style.width = "100%";
+        //     document.getElementById("myCanvasNav").style.opacity = "0.8";
+        //
+        // });
 
         $(".navbar-search").focusout(function(){
             // $('.main_menu').toggle();
@@ -52,17 +51,31 @@ Front = {
         /*  */
 
         /* city */
-        $('input.city_select').autocomplete({
-            serviceUrl: city_autocomplete_url,
-            onSelect: function (suggestion) {
-                $('.category_city').removeClass('open');
-                //
-                city_id = suggestion.data;
-                $(this).closest('.category_item').find('.bottom_cat_name').html(suggestion.value);
-                Front.bringContent(1);
-                // alert('You selected: ' + suggestion.value + ', ' + suggestion.data);
-            }
-        });
+        // $('input.city_select').autocomplete({
+        //     serviceUrl: city_autocomplete_url,
+        //     onSelect: function (suggestion) {
+        //         $('.category_city').removeClass('open');
+        //         //
+        //         city_id = suggestion.data;
+        //         $(this).closest('.category_item').find('.bottom_cat_name').html(suggestion.value);
+        //         Front.bringContent(1);
+        //         // alert('You selected: ' + suggestion.value + ', ' + suggestion.data);
+        //     }
+        // });
+
+        // $('.city_select').autocomplete({
+        //     select:function () {
+        //         console.log('adf');
+        //     }
+        // });
+        // google.maps.event.addListener(autocomplete, 'place_changed', function() {
+        //     var data = $(".city_select").val();
+        //
+        //     $('.city_select').closest('.dropdown-menu').removeClass('show');
+        //     $('.city_select').closest('.category_item').find('.bottom_cat_name').html(data);
+        //     Front.bringContent(1);
+        //
+        // });
         $('.category_city').on('click','.btn-reset',function () {
             $('.city_select').val('');
             $(this).closest('.category_item').find('.bottom_cat_name').html('City');
@@ -120,6 +133,7 @@ Front = {
 
     initFavor: function(){
         $('.product_list').on('click', '.favor_btn', function () {
+
             var product_id = $(this).data('id');
             var user_id = $(this).data('user');
             $.ajax({
@@ -133,9 +147,32 @@ Front = {
                 success:function(data) {
                     var icon = $('.favor_btn_'+data.product_id);
                     if(data.status === 'checked'){
-                        icon.html('<img src="assets/heart-o.png" alt="" style="height: 20px"</i>');
+
+                        icon.html('<img src="assets/heart-o.png" alt="" style="height: 25px;width: 25px;"</img>');
                     }else{
-                        icon.html('<img src="assets/heart.png" alt="" style="height: 20px"</i>');
+                        icon.html('<img src="assets/heart.png" alt="" style="height: 25px;width: 25px;"</img>');
+                    }
+                }
+            });
+        })
+        $('.favor_btn_detail').on('click',function () {
+            var product_id = $(this).data('id');
+            var user_id = $(this).data('user');
+            $.ajax({
+                url: set_favor_url,
+                type: "post",
+                datatype: "json",
+                data: {
+                    product_id: product_id,
+                    user_id: user_id,
+                },
+                success:function(data) {
+                    console.log(123);
+                    var icon = $('.favor_btn_'+data.product_id);
+                    if(data.status === 'checked'){
+                        icon.html('<img src="/../assets/heart-o.png" alt="" style="height: 20px; margin-bottom: 8px;"</i>');
+                    }else{
+                        icon.html('<img src="/../assets/heart.png" alt="" style="height: 20px; margin-bottom: 8px;"</i>');
                     }
                 }
             });
@@ -143,19 +180,21 @@ Front = {
     },
 
     bringContent: function (page) {
+        // console.log($('.city_select').val());
         var product_wrap = $('.product_list');
         if(page === 1){
             product_wrap.html('');
         }
         product_wrap.append('<div class="fa-3x bring-timer"><i class="fa fa-circle-notch fa-spin"></i></div>');
         $.ajax({
+
             url: bring_products_url,
             type: "get",
             datatype: "json",
             data: {
                 page: page,
                 query: query,
-                city_id: city_id,
+                city_id: $('.city_select').val(),
                 price_min:price_min,
                 price_max:price_max,
                 sort_id:sort_id,
@@ -177,10 +216,11 @@ Front = {
 
         $(window).scroll( function () {
 
-            var window_top = $(window).scrollTop() + 1;
+            var window_top = $(window).scrollTop()+100;
+
 
             // bring products by scrolling on home page
-            if (window_top == $(document).height() - $(window).height()) {
+            if (window_top > $(document).height() - $(window).height()) {
                 // ajax call get data from server and append to the div
                 var product_list = $('.product_list');
                 var page = product_list.data('page');
@@ -193,7 +233,7 @@ Front = {
             }
 
             // top menu
-            if (window_top > 400) {
+            if (window_top > 100) {
                 $('.main_menu').show().addClass('menu_fixed animated fadeInDown');
             } else {
                 $('.main_menu').hide().removeClass('menu_fixed animated fadeInDown');

@@ -6,21 +6,29 @@
             <div class="col-md-8">
                 <div class="card">
                     <div class="card-body">
-                        <h1 style="text-align: center;"><a href="{{ route('home') }}"><img src="{{asset('images/gamai-logo.png')}}" alt="" style="height: 30px;"></a></h1>
-                        <p>Buy and sell quickly, safetly and localty. It's time to Gamai!</p>
+                        <h1 style="text-align: center;"><a href="{{ route('home') }}"><img src="{{asset('assets/gamai-logo.png')}}" alt="" style="height: 30px;"></a></h1>
+                        <p>Join Gamai, get what you need,</p>
+                        <p>when you need it, </p>
+                        <p>Quickly, Safely, Efficiently.</p>
+                        <p>It's time to Gamai!</p>
 
                         <form method="POST" action="{{ route('login') }}">
                             @csrf
                             <span>Sign in with your</span>
                             <div class="form-group row login-social" style="justify-content: center;">
-                                <a href="{{route('auth.provider',['provider'=>'facebook']) }}" class="login100-social-item" target="_blank">
-                                    <img src="{{asset('assets/Asset 2@4x.png')}}" alt="" >
+                                <a href="{{route('auth.provider',['provider'=>'facebook']) }}" class="login100-social-item" target="_blank" >
+                                    <img src="{{asset('assets/Facebook.png')}}" alt="" >
                                 </a>
-                                <a href="{{route('auth.provider',['providr'=>'google']) }}" class="login100-social-item" target="_blank">
-                                    <img src="{{asset('assets/Asset 3@4x.png')}}" alt="" >
+
+                                <a href="{{route('auth.provider',['provider'=>'google']) }}" class="login100-social-item" target="_blank" >
+                                    <img src="{{asset('assets/google.png')}}" alt="" >
                                 </a>
-                                <a href="{{ url('register') }}" class="login100-social-item" target="_blank">
-                                    <img src="{{asset('assets/Asset 4@4x.png')}}" alt="">
+                                <a href="{{route('auth.provider',['provider'=>'sign-in-with-apple']) }}" class="login100-social-item" target="_blank" >
+                                    <img src="{{asset('assets/apple.png')}}" alt="" >
+                                </a>
+
+                                <a href="{{ url('register') }}" class="login100-social-item" >
+                                    <img src="{{asset('assets/Sign-up.png')}}" alt="">
                                 </a>
                             </div>
                             <div class="form-group row">

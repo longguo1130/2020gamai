@@ -25,9 +25,9 @@ return [
     ],
 
     'ses' => [
-        'key' => env('AWS_ACCESS_KEY_ID'),
-        'secret' => env('AWS_SECRET_ACCESS_KEY'),
-        'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
+        'key' => env('SES_KEY'),
+        'secret' => env('SES_KEY_SECRET'),
+        'region' => env('SES_REGION'),
     ],
 
     'sparkpost' => [
@@ -35,13 +35,20 @@ return [
     ],
 
     'google' => [
-        'client_id' => '18729931769-8417ceu4ltdrel6c7ci2re5f4qj22but.apps.googleusercontent.com',
-        'client_secret' => 'ZkILqCa1zmO2S099KDynvzuc',
+        'client_id' => '427109905679-kqja0l1rg1m0llcbnnk0jlst5h5cacsl.apps.googleusercontent.com',
+        'client_secret' => 'o1WUboBJbWwzUDORb9nPs2js',
         'redirect' => env('APP_URL').'/auth/google/callback',
     ],
     'facebook' => [
-        'client_id' => '2822777287784007',
-        'client_secret' => 'b494a29ca17ef16e5f58437fa5e310f2',
+        'client_id' => '515262725822676',
+        'client_secret' => 'ac8faed9f39e163f7e27c8a48f8f1170',
         'redirect' => env('APP_URL').'/auth/facebook/callback',
     ],
+
+    'sign_in_with_apple' => [
+        'client_id' => 'com.gamai.testid',
+        'client_secret' => 'eyJraWQiOiI0NlFXWEFEN0tEIiwiYWxnIjoiRVMyNTYifQ.eyJpc3MiOiI4N1BDOTJISlA3IiwiaWF0IjoxNTg3MDk1MjgyLCJleHAiOjE2MDI2NDcyODIsImF1ZCI6Imh0dHBzOi8vYXBwbGVpZC5hcHBsZS5jb20iLCJzdWIiOiJjb20uZ2FtYWkudGVzdGlkIn0.KSbXa55yWkyaJk6C6xVXVpD5VmnWmwTwv_uMdCOdvOzPfeXY5p-lmkISta3zH78QVGOdwZZeMbsgEixlzYlKvA',
+        'redirect' => env('APP_URL').'/auth/sign-in-with-apple/callback',
+    ],
+
 ];

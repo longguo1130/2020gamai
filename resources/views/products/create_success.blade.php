@@ -33,7 +33,7 @@
                         <h5>Share the listing with your friends</h5>
                     </div>
                 </div>
-                <div class="overlay_success"></div>
+                {{--<div class="overlay_success"></div>--}}
             </div>
         </div>
     </div>

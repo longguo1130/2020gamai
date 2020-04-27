@@ -12,18 +12,15 @@
 
         <form id="product-thumb-upload" action="{{ route('product.image.upload') }}" method="POST" enctype="multipart/form-data" style="margin-top:3%;">
             {{ csrf_field() }}
-            {{--<select class="form-control" name="category_id" id="category_id" style="margin-right: 3%;border-radius: 10px;">--}}
-                {{--<option value="0">Select Category</option>--}}
-                {{--@foreach(App\Category::get() as $category)--}}
-                    {{--<option value="{{$category->id}}" {{ old('category_id') == $category->id ? 'selected' : '' }}>{{$category->category}}</option>--}}
-                {{--@endforeach--}}
-            {{--</select>--}}
+
             <div class="dz-wrap" >
                 <div class="dz-message "><i class="fa fa-photo"></i>
                     <h5>Drag and drop, or browse</h5>
                     <p>Upload up to 10 photos of what you're selling. Images must be in <b>PNG</b> or <b>JPG</b> format and under 5mb.</p>
+                    
                 </div>
             </div>
+
             {{-- thumnail slide  --}}
             <ul class="thumbs-wrap">
 
@@ -49,10 +46,20 @@
                     @endforeach
                 </select>
             </div>
-            <div class="form-group{{ $errors->has('city_id') ? ' has-error' : '' }}">
-                <input id="location" type="text" placeholder="Location" class="form-control" name="location" value="{{ old('location') }}">
-                <input id="city_id" type="hidden" class="form-control" name="city_id" value="{{ old('city_id') }}">
+            <div class="form-group {{ $errors->has('sub_category_id') ? ' has-error' : '' }}">
+                <select class="form-control" name="sub_category_id" id="sub_category_id">
+                    <option value="0">Select Sub-Category</option>
+                </select>
             </div>
+
+            <div class="form-group{{ $errors->has('location') ? ' has-error' : '' }}">
+                <label>Location <span class="text-danger"></span></label>
+                <input type="text" name="autocomplete" id="autocomplete1" placeholder="Loading..." class="form-control" value="">
+                @if($errors->has(['location']))
+                    <p class="text-danger">{{ $errors->first('location') }}</p>
+                @endif
+            </div>
+
             <div class="form-group{{ $errors->has('price') ? ' has-error' : '' }}">
 
                 <input id="price" type="text" class="form-control" name="price" value="{{ old('price') }}" placeholder="Type your price"
@@ -111,6 +118,7 @@
     }
     var image_uploaded_url = '{{ route('product.image.uploaded') }}';
     var city_autocomplete_url = '{{ route('city.autocomplete') }}';
+
 </script>
 
 

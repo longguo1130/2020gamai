@@ -51,7 +51,7 @@
                                 <select class="form-control" name="category_id" id="category_id">
                                     <option value="0">Select Category</option>
                                     @foreach(App\Category::get() as $category)
-                                        <option value="{{$category->id}}" {{ old('category_id') == $category->id ? 'selected' : '' }}>{{$category->category}}</option>
+                                        <option value="{{$category->id}}" {{ $post->category_id == $category->id ? 'selected' : '' }}>{{$category->category}}</option>
                                     @endforeach
                                 </select>
 
@@ -65,8 +65,8 @@
                                 <label for="transaction_type" class="col-md-4 control-label">Transaction Type</label>
                                 <select class="form-control" name="transaction_type" id="transaction_type">
                                     <option value="0">Select Type...</option>
-                                    <option value="1" {{ $post->transaction_type == 1 ? 'selected' : '' }}>Type 1</option>
-                                    <option value="2" {{ $post->transaction_type == 2 ? 'selected' : '' }}>Type 2</option>
+                                    <option value="1" {{ $post->transaction_type == 1 ? 'selected' : '' }}>Rent</option>
+                                    <option value="2" {{ $post->transaction_type == 2 ? 'selected' : '' }}>Rent or Sell</option>
                                 </select>
 
                             </div>

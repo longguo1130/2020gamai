@@ -4,7 +4,7 @@
  * building robust, powerful web applications using Vue and Laravel.
  */
 
-require('./bootstrap');
+// require('./bootstrap');
 
 window.Vue = require('vue');
 
@@ -30,3 +30,16 @@ Vue.component('example-component', require('./components/ExampleComponent.vue').
 const app = new Vue({
     el: '#app',
 });
+
+
+// let userId = '{{Auth::user()->id}}';
+//
+// if(userId){
+//     window.Echo.private('App.User.' + userId).notification((notifiable) => {
+//         $('.badge').text(notifiable.count);
+//         var message = '<a class="dropdown-item" href="/products/'+notifiable.data.product_id+'">'+notifiable.data.message+'</a>'
+//         $('#notificationlist').prepend(message);
+//     });
+// }
+
+

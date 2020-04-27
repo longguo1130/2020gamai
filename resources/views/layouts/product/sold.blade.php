@@ -107,7 +107,7 @@
                     </div>
                 </div>
                 <div class="col-md-2">
-                    <img src="{{asset('images/adv.png')}}" style="height: 600px;width:100%;">
+                    {{--<img src="{{asset('images/adv.png')}}" style="height: 600px;width:100%;">--}}
                 </div>
             </div>
         </div>

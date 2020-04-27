@@ -7,7 +7,7 @@
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>Gamay</title>
+    <title>Gamai</title>
 
     <!-- Scripts -->
     {{--<script src="{{ asset('js/app_back.js') }}" defer></script>--}}

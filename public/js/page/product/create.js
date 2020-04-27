@@ -1,7 +1,7 @@
 
 $(function () {
     fm_dropzone_main = new Dropzone("#product-thumb-upload", {
-        maxFilesize: 2,
+        maxFilesize: 5,
         acceptedFiles: "image/png,image/jpeg",
         dataType: 'json',
         init: function () {
@@ -48,28 +48,35 @@ $(function () {
         }
     });
 
+
 });
 
 function loadUploadedFiles(upload_id) {
     // load folder files
+
+
     $.ajax({
         dataType: 'json',
         url: image_uploaded_url,
         data: {upload_id:upload_id},
         success: function ( json ) {
             var img_url = json.img_url;
-            $('.thumbs-profile').src =img_url;
+
             if ($(".dz-message")[0].childNodes[0].tagName != "IMG") {
 
                 $('.dz-message').empty();
-                var first_url = '<img src="'+img_url+'" style="width:100%;height: 100%;">';
+                var first_url = '<img src="'+img_url+'" style="width:80%;height: 70%;" ><i class="fa fa-plus" style="width:25%;height: 25%;">';
                 $('.dz-message').append(first_url);
             }
+            var avatar_url = '<img src="'+img_url+'" style="border-radius: 50%;width:120px;height: 120px;"  >';
+            $(".user-avatar").empty();
+            $(".user-avatar").append(avatar_url);
+
 
             var thumb_url = json.thumb_url;
             var thumb = '<li class="thumb" data-id="'+json.image_id+'">' +
                 '<a data-fancybox="gallery" href="'+img_url+'">' +
-                '<img src="'+img_url+'"><i class="fa fa-close"></i></a></li>';
+                '<img src="'+thumb_url+'"><i class="fa fa-close"></i></a></li>';
             $('.thumbs-wrap').append(thumb);
         }
     });

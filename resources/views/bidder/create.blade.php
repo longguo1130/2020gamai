@@ -6,7 +6,7 @@
 
     <form id="bid-info" class="bid-content" method="POST" action="{{ route('bidders.store',['buyer_id'=>Auth::user()->id,'seller_id'=>$product->user_id,'product_id'=>$product->id,'price'=>$product->price ]) }}">
         {{ csrf_field() }}
-        @if(Auth::user()->bid_count>$product->price)
+        @if(Auth::user()->bid_count>=$product->price)
         <div class="form-group">
             <div class="row">
 
@@ -23,8 +23,8 @@
                     {{--<input id="duration" type="text" class="form-control" name="duration">--}}
                     <select class="form-control" name="duration" id="duration">
                         <option value="0">Select Duration</option>
-                        <option value="Day" {{ old('duration') == 1 ? 'selected' : '' }}>Day</option>
-                        <option value="Week" {{ old('duration') == 2 ? 'selected' : '' }}>Week</option>
+                        {{--<option value="Day" {{ old('duration') == 1 ? 'selected' : '' }}>Day</option>--}}
+                        {{--<option value="Week" {{ old('duration') == 2 ? 'selected' : '' }}>Week</option>--}}
                         <option value="Month" {{ old('duration') == 3 ? 'selected' : '' }}>Month</option>
                         <option value="Year" {{ old('duration') == 4 ? 'selected' : '' }}>Year</option>
                     </select>

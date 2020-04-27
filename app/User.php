@@ -16,7 +16,7 @@ class User extends Authenticatable implements MustVerifyEmail
      * @var array
      */
     protected $fillable = [
-        'deposit','name', 'username', 'email', 'password', 'provider', 'provider_id', 'city_id','avatar','mobile','fullname','address','verify_status','bid_count','transaction_count','update_count','valid_id_status','valid_id'
+        'deposit','name', 'username', 'email', 'password', 'provider', 'provider_id', 'city_id','avatar','mobile','fullname','address','verify_status','bid_count','transaction_count','update_count','valid_id_status','valid_id','user_role','membership','membership_type'
     ];
 
     /**
@@ -25,8 +25,11 @@ class User extends Authenticatable implements MustVerifyEmail
      * @var array
      */
     protected $hidden = [
-        'password', 'remember_token',
+         'remember_token',
     ];
+//    protected $hidden = [
+//        'password', 'remember_token',
+//    ];
 
     /**
      * The attributes that should be cast to native types.
@@ -49,7 +52,7 @@ class User extends Authenticatable implements MustVerifyEmail
         return ($user = auth()->user()) && $user->user_role==1;
     }
     public static function isModerator(){
-        return ($user = auth()->user()) && $user->user_role==2;
+        return ($user = auth()->user()) && $user->user_role==2 || $user->user_role==3 ;
     }
     public function created_date(){
         //return Carbon::parse($this->created_at)->diffForHumans();

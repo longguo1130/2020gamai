@@ -12,7 +12,7 @@
                     <div class="success-dialog">
                         <h2>Congratulations!</h2>
 
-                        <form class="form-horizontal" action="{{route('bidders.feedback',['bid'=>$bid])}}">
+                        <form class="form-horizontal" action="{{route('bidders.feedback',['id'=>$bid->id])}}">
                             <div class="form-group">
                                 <label for="">Feedback</label>
                             </div>
@@ -34,7 +34,7 @@
 
                             </div>
                             <div class="form-group">
-                                <textarea name="comments" id="comments" cols="30" rows="5"></textarea>
+                                <textarea name="comments" id="comments" cols="25" rows="5"></textarea>
                             </div>
                             <div class="form-group">
                                 <button type="submit">Submit</button>
@@ -42,7 +42,7 @@
                         </form>
                     </div>
                 </div>
-                <div class="overlay_success"></div>
+                {{--<div class="overlay_success"></div>--}}
             </div>
         </div>
     </div>
