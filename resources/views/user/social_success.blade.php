@@ -61,7 +61,7 @@
 
 @endsection
 @section('additional_js')
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC7DF6McPxX3EaMwltYNDp5VLbfRpy3dro &libraries=places&callback=initAutocomplete"
+    <script src="https://maps.googleapis.com/maps/api/js?key=427109905679-kqja0l1rg1m0llcbnnk0jlst5h5cacsl &libraries=places&callback=initAutocomplete"
             async defer></script>
     <script>
         var image_uploaded_url = '{{ route('product.image.uploaded') }}';
